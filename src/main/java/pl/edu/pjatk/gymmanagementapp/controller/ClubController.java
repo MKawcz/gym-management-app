@@ -3,7 +3,6 @@ package pl.edu.pjatk.gymmanagementapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.pjatk.gymmanagementapp.entity.Cleaner;
 import pl.edu.pjatk.gymmanagementapp.entity.Club;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 

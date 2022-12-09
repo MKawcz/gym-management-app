@@ -11,10 +11,8 @@ public class Cleaner {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idCleaner;
 
-    @Column
     private String firstName;
 
-    @Column
     private String lastName;
 
 }

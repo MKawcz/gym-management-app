@@ -11,10 +11,8 @@ public class Coach {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idCoach;
 
-    @Column
     private String firstName;
 
-    @Column
     private String lastName;
 
     

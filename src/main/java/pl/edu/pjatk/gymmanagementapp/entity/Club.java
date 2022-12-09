@@ -11,16 +11,12 @@ public class Club {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idClub;
 
-    @Column
     private String streetName;
 
-    @Column
     private String streetNumber;
 
-    @Column
     private String postalCode;
 
-    @Column
     private String City;
 
 }

@@ -11,10 +11,8 @@ public class Manager {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idManager;
 
-    @Column
     private String firstName;
 
-    @Column
     private String lastName;
 
     @OneToOne(mappedBy = "manager")

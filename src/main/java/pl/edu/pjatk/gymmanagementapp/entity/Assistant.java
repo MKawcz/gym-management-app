@@ -11,10 +11,8 @@ public class Assistant {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idAssistant;
 
-    @Column
     private String firstName;
 
-    @Column
     private String lastName;
 
 }
