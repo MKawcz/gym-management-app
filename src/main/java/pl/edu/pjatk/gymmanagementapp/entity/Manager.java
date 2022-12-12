@@ -8,7 +8,7 @@ import lombok.Data;
 public class Manager {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idManager;
 
     private String firstName;
@@ -17,5 +17,9 @@ public class Manager {
 
     @OneToOne(mappedBy = "manager")
     private Operator operator;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="idClub")
+    private Club club;
 
 }

@@ -10,22 +10,22 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class AsisstantController {
+public class AssistantController {
 
     private final AssistantRepository assistantRepository;
 
     @PostMapping("/assistants")
-    Assistant newAssistant (@RequestBody Assistant newAssistant){
+    public Assistant newAssistant (@RequestBody Assistant newAssistant){
         return assistantRepository.save(newAssistant);
     }
 
     @GetMapping("/assistants")
-    List<Assistant> listAssistants(){
+    public List<Assistant> listAssistants(){
         return assistantRepository.findAll();
     }
 
     @DeleteMapping("/assistants")
-    ResponseEntity deleteAssitant(@RequestBody Long idAssistant){
+    public ResponseEntity deleteAssistant(@RequestBody Long idAssistant){
         assistantRepository.deleteById(idAssistant);
         return ResponseEntity.ok().build();
     }

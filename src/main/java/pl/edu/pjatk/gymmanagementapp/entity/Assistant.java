@@ -8,11 +8,15 @@ import lombok.Data;
 public class Assistant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAssistant;
 
     private String firstName;
 
     private String lastName;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="idClub")
+    private Club club;
 
 }

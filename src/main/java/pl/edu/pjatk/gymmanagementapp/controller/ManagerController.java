@@ -15,17 +15,17 @@ public class ManagerController {
     private final ManagerRepository managerRepository;
 
     @PostMapping("/managers")
-    Manager newManager (@RequestBody Manager newManager){
+    public Manager newManager (@RequestBody Manager newManager){
         return managerRepository.save(newManager);
     }
 
     @GetMapping("/managers")
-    List<Manager> listManagers(){
+    public List<Manager> listManagers(){
         return managerRepository.findAll();
     }
 
     @DeleteMapping("/managers")
-    ResponseEntity deleteManager(@RequestBody Long idManager){
+    public ResponseEntity deleteManager(@RequestBody Long idManager){
         managerRepository.deleteById(idManager);
         return ResponseEntity.ok().build();
     }

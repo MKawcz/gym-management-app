@@ -17,17 +17,17 @@ public class CoachController {
     private final CoachRepository coachRepository;
 
     @PostMapping("/coaches")
-    Coach newCoach (@RequestBody Coach newCoach){
+    public Coach newCoach (@RequestBody Coach newCoach){
         return coachRepository.save(newCoach);
     }
 
     @GetMapping("/coaches")
-    List<Coach> listCoaches(){
+    public List<Coach> listCoaches(){
         return coachRepository.findAll();
     }
 
     @DeleteMapping("/coaches")
-    ResponseEntity deleteCoach(@RequestBody Long idCoach){
+    public ResponseEntity deleteCoach(@RequestBody Long idCoach){
         coachRepository.deleteById(idCoach);
         return ResponseEntity.ok().build();
     }

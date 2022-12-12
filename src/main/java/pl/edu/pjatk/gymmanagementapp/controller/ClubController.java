@@ -15,17 +15,17 @@ public class ClubController {
     private final ClubRepository clubRepository;
 
     @PostMapping("/clubs")
-    Club newClub (@RequestBody Club newClub){
+    public Club newClub (@RequestBody Club newClub){
         return clubRepository.save(newClub);
     }
 
     @GetMapping("/clubs")
-    List<Club> listClubs(){
+    public List<Club> listClubs(){
         return clubRepository.findAll();
     }
 
     @DeleteMapping("/clubs")
-    ResponseEntity deleteClub(@RequestBody Long idClub){
+    public ResponseEntity deleteClub(@RequestBody Long idClub){
         clubRepository.deleteById(idClub);
         return ResponseEntity.ok().build();
     }
