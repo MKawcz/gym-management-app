@@ -19,7 +19,7 @@ public class Club {
 
     private String postalCode;
 
-    private String City;
+    private String city;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "club")
     private List<Manager> managers;
@@ -30,7 +30,6 @@ public class Club {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "club")
     private List<Assistant> assistants;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "club")
-    private List<Cleaner> cleaners;
 
+    //todo stwórz klase address
 }
