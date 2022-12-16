@@ -31,7 +31,7 @@ public class CoachController {
                 return CoachDto.of(coachRepository.save(coach));
             } else {
                 throw new RuntimeException("The user with the given id could not be found: " + dto.getIdCoach());
-                //todo zaimplementuj własny wyjątek i obsługę
+                //todo zaimplementuj własny wyjątek
             }
         }
     }

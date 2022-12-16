@@ -12,31 +12,28 @@ public class Manager{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idManager;
 
-    private String firstName;
+    @Embedded
+    private Employee employee = new Employee();
 
-    private String lastName;
-
-    private Integer salary;
+    @OneToOne(mappedBy = "manager")
+    private Operator operator;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="idClub")
     private Club club;
 
-    @OneToOne(mappedBy = "manager")
-    private Operator operator;
-
     public static Manager of(ManagerDto dto) {
         Manager manager = new Manager();
-        manager.setFirstName(dto.getFirstName());
-        manager.setLastName(dto.getLastName());
-        manager.setSalary(dto.getSalary());
+        manager.getEmployee().setFirstName(dto.getFirstName());
+        manager.getEmployee().setLastName(dto.getLastName());
+        manager.getEmployee().setSalary(dto.getSalary());
 
         return manager;
     }
 
     public void updateManager(ManagerDto dto) {
-        this.setFirstName(dto.getFirstName());
-        this.setLastName(dto.getLastName());
-        this.setSalary(dto.getSalary());
+        this.getEmployee().setFirstName(dto.getFirstName());
+        this.getEmployee().setLastName(dto.getLastName());
+        this.getEmployee().setSalary(dto.getSalary());
     }
 }

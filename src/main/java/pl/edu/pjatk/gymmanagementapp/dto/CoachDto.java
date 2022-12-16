@@ -14,9 +14,9 @@ public class CoachDto {
     public static CoachDto of(Coach coach) {
         CoachDto dto = new CoachDto();
         dto.setIdCoach(coach.getIdCoach());
-        dto.setFirstName(coach.getFirstName());
-        dto.setLastName(coach.getLastName());
-        dto.setSalary(coach.getSalary());
+        dto.setFirstName(coach.getEmployee().getFirstName());
+        dto.setLastName(coach.getEmployee().getLastName());
+        dto.setSalary(coach.getEmployee().getSalary());
 
         return dto;
     }

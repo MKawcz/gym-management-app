@@ -20,8 +20,8 @@ public class OperatorAuthenticationResultDto {
     public static OperatorAuthenticationResultDto of(Operator operator){
         OperatorAuthenticationResultDto dto = new OperatorAuthenticationResultDto();
         dto.setAuthentication(true);
-        dto.setFirstName(operator.getManager().getFirstName());
-        dto.setLastName(operator.getManager().getLastName());
+        dto.setFirstName(operator.getManager().getEmployee().getFirstName());
+        dto.setLastName(operator.getManager().getEmployee().getLastName());
         dto.setIdOperator(operator.getIdOperator());
 
         return dto;

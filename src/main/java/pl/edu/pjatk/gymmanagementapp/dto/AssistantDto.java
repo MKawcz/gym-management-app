@@ -15,9 +15,9 @@ public class AssistantDto {
     public static AssistantDto of(Assistant assistant) {
         AssistantDto dto = new AssistantDto();
         dto.setIdAssistant(assistant.getIdAssistant());
-        dto.setFirstName(assistant.getFirstName());
-        dto.setLastName(assistant.getLastName());
-        dto.setSalary(assistant.getSalary());
+        dto.setFirstName(assistant.getEmployee().getFirstName());
+        dto.setLastName(assistant.getEmployee().getLastName());
+        dto.setSalary(assistant.getEmployee().getSalary());
 
         return dto;
     }

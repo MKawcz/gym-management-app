@@ -51,8 +51,8 @@ public class ManagerController {
         //todo obsłuż wyjątek, gdyby nie było managera o podanym id
     }
 
-    @DeleteMapping("/managers")
-    public ResponseEntity deleteManager(@RequestBody Long idManager){
+    @DeleteMapping("/managers/{idManager}")
+    public ResponseEntity deleteManager(@PathVariable Long idManager){
         managerRepository.deleteById(idManager);
         return ResponseEntity.ok().build();
     }

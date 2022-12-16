@@ -13,29 +13,27 @@ public class Assistant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAssistant;
 
-    private String firstName;
-
-    private String lastName;
-
-    private Integer salary;
+    @Embedded
+    private Employee employee = new Employee();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="idClub")
     private Club club;
 
+
     public static Assistant of(AssistantDto dto) {
         Assistant assistant = new Assistant();
-        assistant.setFirstName(dto.getFirstName());
-        assistant.setLastName(dto.getLastName());
-        assistant.setSalary(dto.getSalary());
+        assistant.getEmployee().setFirstName(dto.getFirstName());
+        assistant.getEmployee().setLastName(dto.getLastName());
+        assistant.getEmployee().setSalary(dto.getSalary());
 
         return assistant;
     }
 
     public void updateAssistant(AssistantDto dto) {
-        this.setFirstName(dto.getFirstName());
-        this.setLastName(dto.getLastName());
-        this.setSalary(dto.getSalary());
+        this.getEmployee().setFirstName(dto.getFirstName());
+        this.getEmployee().setLastName(dto.getLastName());
+        this.getEmployee().setSalary(dto.getSalary());
     }
 
 }

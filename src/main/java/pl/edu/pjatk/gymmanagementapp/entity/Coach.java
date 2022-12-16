@@ -13,11 +13,8 @@ public class Coach {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCoach;
 
-    private String firstName;
-
-    private String lastName;
-
-    private Integer salary;
+    @Embedded
+    private Employee employee = new Employee();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="idClub")
@@ -25,17 +22,17 @@ public class Coach {
 
     public static Coach of(CoachDto dto) {
         Coach coach = new Coach();
-        coach.setFirstName(dto.getFirstName());
-        coach.setLastName(dto.getLastName());
-        coach.setSalary(dto.getSalary());
+        coach.getEmployee().setFirstName(dto.getFirstName());
+        coach.getEmployee().setLastName(dto.getLastName());
+        coach.getEmployee().setSalary(dto.getSalary());
 
         return coach;
     }
 
     public void updateCoach(CoachDto dto) {
-        this.setFirstName(dto.getFirstName());
-        this.setLastName(dto.getLastName());
-        this.setSalary(dto.getSalary());
+        this.getEmployee().setFirstName(dto.getFirstName());
+        this.getEmployee().setLastName(dto.getLastName());
+        this.getEmployee().setSalary(dto.getSalary());
     }
 
 }
