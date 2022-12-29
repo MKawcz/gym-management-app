@@ -14,9 +14,9 @@ public class ManagerDto {
     public static ManagerDto of(Manager manager) {
         ManagerDto dto = new ManagerDto();
         dto.setIdManager(manager.getIdManager());
-        dto.setFirstName(manager.getEmployee().getFirstName());
-        dto.setLastName(manager.getEmployee().getLastName());
-        dto.setSalary(manager.getEmployee().getSalary());
+        dto.setFirstName(manager.getFirstName());
+        dto.setLastName(manager.getLastName());
+        dto.setSalary(manager.getSalary());
 
         return dto;
     }

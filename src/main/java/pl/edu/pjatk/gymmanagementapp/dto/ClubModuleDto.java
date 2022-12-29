@@ -15,6 +15,6 @@ public class ClubModuleDto {
     private List<ClubDto> clubDtoList;
     private List<ManagerDto> managerDtoList;
     private List<CoachDto> coachDtoList;
-    private List<AssistantDto> assistantDtoList;
+
 
 }

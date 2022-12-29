@@ -2,6 +2,9 @@ package pl.edu.pjatk.gymmanagementapp.dto;
 
 import lombok.Data;
 import pl.edu.pjatk.gymmanagementapp.entity.Coach;
+import pl.edu.pjatk.gymmanagementapp.entity.Member;
+
+import java.util.List;
 
 @Data
 public class CoachDto {
@@ -14,11 +17,10 @@ public class CoachDto {
     public static CoachDto of(Coach coach) {
         CoachDto dto = new CoachDto();
         dto.setIdCoach(coach.getIdCoach());
-        dto.setFirstName(coach.getEmployee().getFirstName());
-        dto.setLastName(coach.getEmployee().getLastName());
-        dto.setSalary(coach.getEmployee().getSalary());
+        dto.setFirstName(coach.getFirstName());
+        dto.setLastName(coach.getLastName());
+        dto.setSalary(coach.getSalary());
 
         return dto;
     }
-
 }

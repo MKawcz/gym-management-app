@@ -5,6 +5,8 @@ import lombok.Data;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
 
+import java.util.List;
+
 @Entity
 @Data
 public class Coach {
@@ -13,8 +15,14 @@ public class Coach {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCoach;
 
-    @Embedded
-    private Employee employee = new Employee();
+    private String firstName;
+
+    private String lastName;
+
+    private Integer salary;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "coach")
+    private List<Member> members;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="idClub")
@@ -22,17 +30,10 @@ public class Coach {
 
     public static Coach of(CoachDto dto) {
         Coach coach = new Coach();
-        coach.getEmployee().setFirstName(dto.getFirstName());
-        coach.getEmployee().setLastName(dto.getLastName());
-        coach.getEmployee().setSalary(dto.getSalary());
+        coach.setFirstName(dto.getFirstName());
+        coach.setLastName(dto.getLastName());
+        coach.setSalary(dto.getSalary());
 
         return coach;
     }
-
-    public void updateCoach(CoachDto dto) {
-        this.getEmployee().setFirstName(dto.getFirstName());
-        this.getEmployee().setLastName(dto.getLastName());
-        this.getEmployee().setSalary(dto.getSalary());
-    }
-
 }
