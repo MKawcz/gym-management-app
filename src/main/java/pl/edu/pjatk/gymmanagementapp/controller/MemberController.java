@@ -31,8 +31,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.updateMember(memberId, dto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteMember(@RequestParam long memberId) {
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> deleteMember(@PathVariable long memberId) {
         memberService.deleteMember(memberId);
         return ResponseEntity.ok("Member of id:" + memberId + " has been deleted");
     }

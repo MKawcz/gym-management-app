@@ -32,6 +32,7 @@ public class Member {
         Member member = new Member();
         member.setFirstName(dto.getFirstName());
         member.setLastName(dto.getLastName());
+        member.setMembershipType(dto.getMembershipType());
 
         return member;
     }

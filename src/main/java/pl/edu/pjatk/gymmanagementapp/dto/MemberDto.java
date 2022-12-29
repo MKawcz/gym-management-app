@@ -11,12 +11,14 @@ public class MemberDto {
     private Long idMember;
     private String firstName;
     private String lastName;
+    private MembershipType membershipType;
 
     public static MemberDto of(Member member) {
         MemberDto dto = new MemberDto();
         dto.setIdMember(member.getIdMember());
         dto.setFirstName(member.getFirstName());
         dto.setLastName(member.getLastName());
+        dto.setMembershipType(member.getMembershipType());
 
         return dto;
     }

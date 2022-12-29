@@ -30,8 +30,8 @@ public class ManagerController {
         return ResponseEntity.ok(managerService.updateManager(managerId, dto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteManager(@RequestParam long managerId) {
+    @DeleteMapping("/{managerId}")
+    public ResponseEntity<String> deleteManager(@PathVariable long managerId) {
         managerService.deleteManager(managerId);
         return ResponseEntity.ok("Manager of id: " + managerId + " has been deleted");
     }

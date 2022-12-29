@@ -32,8 +32,8 @@ public class CoachController {
         return ResponseEntity.ok(coachService.updateCoach(coachId, dto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteCoach(@RequestParam long coachId) {
+    @DeleteMapping("/{coachId}")
+    public ResponseEntity<String> deleteCoach(@PathVariable long coachId) {
         coachService.deleteCoach(coachId);
         return ResponseEntity.ok("Coach of id: " + coachId + " has been deleted");
     }
@@ -46,6 +46,16 @@ public class CoachController {
     @GetMapping("/{coachId}/members")
     public ResponseEntity<List<MemberDto>> getMembers(@PathVariable long coachId) {
         return ResponseEntity.ok(coachService.getMembers(coachId));
+    }
+
+    @PostMapping("/{coachId}/members")
+    public ResponseEntity<MemberDto> saveCoachNewMember(@PathVariable long coachId, @RequestBody MemberDto dto) {
+        return ResponseEntity.ok(coachService.saveCoachNewMember(coachId, dto));
+    }
+
+    @PostMapping("/{coachId}/members/{memberId}")
+    public ResponseEntity<MemberDto> saveCoachExistingMember(@PathVariable long coachId, @PathVariable long memberId) {
+        return ResponseEntity.ok(coachService.saveCoachExistingMember(coachId, memberId));
     }
 
 //    @PostMapping("/coaches")

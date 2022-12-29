@@ -33,8 +33,8 @@ public class ClubController {
         return ResponseEntity.ok(clubService.updateClub(clubId, dto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteClub(@RequestParam long clubId) {
+    @DeleteMapping("/{clubId}")
+    public ResponseEntity<String> deleteClub(@PathVariable long clubId) {
         clubService.deleteClub(clubId);
         return ResponseEntity.ok("Club of id: " + clubId + " has been deleted");
     }

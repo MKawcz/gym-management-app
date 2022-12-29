@@ -27,8 +27,8 @@ public class OperatorController {
         return operatorRepository.findAll();
     }
 
-    @DeleteMapping("/operators")
-    public ResponseEntity deleteOperator(@RequestBody Long idOperator){
+    @DeleteMapping("/operators/{idOperator}")
+    public ResponseEntity deleteOperator(@PathVariable Long idOperator){
         operatorRepository.deleteById(idOperator);
         return ResponseEntity.ok().build();
     }
