@@ -23,7 +23,7 @@ public class CoachController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CoachDto>> getAllCoaches(){
+    public ResponseEntity<List<CoachDto>> getAllCoaches() {
         return ResponseEntity.ok(coachService.getAllCoaches());
     }
 
@@ -44,7 +44,7 @@ public class CoachController {
     }
 
     @GetMapping("/{coachId}/members")
-    public ResponseEntity<List<MemberDto>> getMembers(@PathVariable long coachId) {
+    public ResponseEntity<List<MemberDto>> getCoachMembers(@PathVariable long coachId) {
         return ResponseEntity.ok(coachService.getMembers(coachId));
     }
 
@@ -58,45 +58,9 @@ public class CoachController {
         return ResponseEntity.ok(coachService.saveCoachExistingMember(coachId, memberId));
     }
 
-//    @PostMapping("/coaches")
-//    public CoachDto saveOrUpdateCoach (@RequestBody CoachDto dto){
-//        if(dto.getIdCoach() == null){
-//            return CoachDto.of(coachRepository.save(Coach.of(dto)));
-//        } else {
-//            Optional<Coach> optionalCoach = coachRepository.findById(dto.getIdCoach());
-//            if(optionalCoach.isPresent()){
-//                Coach coach = optionalCoach.get();
-//                coach.updateCoach(dto);
-//                return CoachDto.of(coachRepository.save(coach));
-//            } else {
-//                throw new RuntimeException("The user with the given id could not be found: " + dto.getIdCoach());
-//                //todo
-//                // zaimplementuj własny wyjątek
-//            }
-//        }
-//    }
-//
-//    @GetMapping("/coaches")
-//    public List<CoachDto> listCoaches(){
-//        return coachRepository.findAll()
-//                .stream()
-//                .map(CoachDto::of)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @GetMapping("/coaches/{idCoach}")
-//    public CoachDto getCoach(@PathVariable Long idCoach){
-//        Optional<Coach> optionalCoach = coachRepository.findById(idCoach);
-//
-//        return CoachDto.of(optionalCoach.get());
-//
-//        //todo obsłuż wyjątek, gdyby nie było trenera o podanym id
-//    }
-//
-//    @DeleteMapping("/coaches")
-//    public ResponseEntity deleteCoach(@RequestBody Long idCoach){
-//        coachRepository.deleteById(idCoach);
-//        return ResponseEntity.ok().build();
-//    }
+    @PutMapping("/{coachId}/members/{memberId}")
+    public ResponseEntity<List<MemberDto>> removeCoachMember(@PathVariable long coachId, @PathVariable long memberId) {
+        return ResponseEntity.ok(coachService.removeCoachMember(coachId, memberId));
+    }
 
 }

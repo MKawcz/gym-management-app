@@ -14,30 +14,25 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-
     private final MemberRepository repository;
 
     public MemberDto saveMember(MemberDto dto) {
-        return MemberDto.of(repository.save(Member.of(dto)));
+        Member member = new Member();
+        member.of(dto);
+        return MemberDto.of(repository.save(member));
     }
 
     public List<MemberDto> getAllMembers() {
-        return repository.findAll().stream().map(MemberDto::of).toList();
+        return repository.findAll().stream()
+                .map(MemberDto::of)
+                .toList();
     }
 
     public MemberDto updateMember(long memberId, MemberDto updatedDto) {
         var optionalMember = repository.findById(memberId);
         if(optionalMember.isPresent()) {
             Member memberToUpdate = optionalMember.get();
-
-            if(updatedDto.getFirstName() != null) {
-                memberToUpdate.setFirstName(updatedDto.getFirstName());
-            }
-
-            if(updatedDto.getLastName() != null) {
-                memberToUpdate.setLastName(updatedDto.getLastName());
-            }
-
+            memberToUpdate.of(updatedDto);
             return MemberDto.of(repository.save(memberToUpdate));
         }
 
@@ -60,4 +55,6 @@ public class MemberService {
         throw new RuntimeException("Member with the given id does not exist");
     }
 
+    //todo set member coach
 }
+

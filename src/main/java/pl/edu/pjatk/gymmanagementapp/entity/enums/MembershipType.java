@@ -1,4 +1,6 @@
-package pl.edu.pjatk.gymmanagementapp.entity;
+package pl.edu.pjatk.gymmanagementapp.entity.enums;
+
+import lombok.Getter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 //    }
 //}
 
+@Getter
 public enum MembershipType {
     DAILY(Duration.ofDays(1)),
     MONTHLY(Duration.ofDays(30)),
@@ -36,7 +39,6 @@ public enum MembershipType {
         this.duration = duration;
     }
 
-    public Duration getDuration() {
-        return duration;
-    }
+    //todo start & end data
+
 }

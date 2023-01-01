@@ -14,26 +14,26 @@ public class Coach {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCoach;
-
     private String firstName;
-
     private String lastName;
-
     private Integer salary;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "coach")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "coach", orphanRemoval = true)
     private List<Member> members;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="idClub")
+    @JoinColumn(name="id_club")
     private Club club;
 
-    public static Coach of(CoachDto dto) {
-        Coach coach = new Coach();
-        coach.setFirstName(dto.getFirstName());
-        coach.setLastName(dto.getLastName());
-        coach.setSalary(dto.getSalary());
-
-        return coach;
+    public void of(CoachDto dto) {
+        if(dto.getFirstName() != null) {
+            this.setFirstName(dto.getFirstName());
+        }
+        if(dto.getLastName() != null) {
+            this.setLastName(dto.getLastName());
+        }
+        if(dto.getSalary() != null) {
+            this.setSalary(dto.getSalary());
+        }
     }
 }

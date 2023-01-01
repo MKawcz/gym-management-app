@@ -3,10 +3,7 @@ package pl.edu.pjatk.gymmanagementapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.pjatk.gymmanagementapp.dto.ClubDto;
-import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
-import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
-import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
+import pl.edu.pjatk.gymmanagementapp.dto.*;
 import pl.edu.pjatk.gymmanagementapp.service.ClubService;
 
 import java.util.List;
@@ -45,45 +42,29 @@ public class ClubController {
     }
 
     @GetMapping("/{clubId}/members")
-    public ResponseEntity<List<MemberDto>> getMembers(@PathVariable long clubId) {
-        return ResponseEntity.ok(clubService.getMembers(clubId));
+    public ResponseEntity<List<MemberDto>> getClubMembers(@PathVariable long clubId) {
+        return ResponseEntity.ok(clubService.getClubMembers(clubId));
     }
 
     @GetMapping("/{clubId}/coaches")
-    public ResponseEntity<List<CoachDto>> getCoaches(@PathVariable long clubId) {
-        return ResponseEntity.ok(clubService.getCoaches(clubId));
+    public ResponseEntity<List<CoachDto>> getClubCoaches(@PathVariable long clubId) {
+        return ResponseEntity.ok(clubService.getClubCoaches(clubId));
     }
 
     @GetMapping("/{clubId}/managers")
-    public ResponseEntity<List<ManagerDto>> getManagers(@PathVariable long clubId) {
-        return ResponseEntity.ok(clubService.getManagers(clubId));
+    public ResponseEntity<List<ManagerDto>> getClubManagers(@PathVariable long clubId) {
+        return ResponseEntity.ok(clubService.getClubManagers(clubId));
     }
 
-//    @GetMapping("/club_module_data")
-//    public ClubModuleDto getClubModuleData(@RequestParam Optional<String> idClub){
-//        if(idClub.isPresent()){
-//            return clubService.getClubModuleData(Long.parseLong(idClub.get()));
-//        } else {
-//            return clubService.getClubModuleData();
-//        }
-//    }
+    @GetMapping("/{clubId}/address")
+    public ResponseEntity<AddressDto> getClubAddress(@PathVariable long clubId) {
+        return ResponseEntity.ok(clubService.getClubAddress(clubId));
+    }
 
+    @PostMapping("/{clubId}/address")
+    public ResponseEntity<AddressDto> saveClubAddress(@PathVariable long clubId, @RequestBody AddressDto dto) {
+        return ResponseEntity.ok(clubService.saveClubAddress(clubId, dto));
+    }
 
-//    @PostMapping("/clubs")
-//    public Club newClub (@RequestBody Club newClub){
-//        return clubRepository.save(newClub);
-//    }
-//
-//    @GetMapping("/clubs")
-//    public List<Club> listClubs(){
-//        return clubRepository.findAll();
-//    }
-//
-//    @DeleteMapping("/clubs")
-//    public ResponseEntity deleteClub(@RequestBody Long idClub){
-//        clubRepository.deleteById(idClub);
-//        return ResponseEntity.ok().build();
-//    }
-//
 
 }

@@ -7,6 +7,7 @@ import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
 import pl.edu.pjatk.gymmanagementapp.entity.Coach;
 import pl.edu.pjatk.gymmanagementapp.entity.Member;
 import pl.edu.pjatk.gymmanagementapp.repository.CoachRepository;
+import pl.edu.pjatk.gymmanagementapp.repository.ICatalogData;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
@@ -14,35 +15,26 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CoachService {
-
     private final CoachRepository coachRepository;
     private final MemberRepository memberRepository;
 
     public CoachDto saveCoach(CoachDto dto) {
-        return CoachDto.of(coachRepository.save(Coach.of(dto)));
+        Coach coach = new Coach();
+        coach.of(dto);
+        return CoachDto.of(coachRepository.save(coach));
     }
 
     public List<CoachDto> getAllCoaches() {
-        return coachRepository.findAll().stream().map(CoachDto::of).toList();
+        return coachRepository.findAll().stream()
+                .map(CoachDto::of)
+                .toList();
     }
 
     public CoachDto updateCoach(long coachId, CoachDto updatedDto) {
         var optionalCoach = coachRepository.findById(coachId);
         if(optionalCoach.isPresent()) {
             Coach coachToUpdate = optionalCoach.get();
-
-            if(updatedDto.getFirstName() != null) {
-                coachToUpdate.setFirstName(updatedDto.getFirstName());
-            }
-
-            if(updatedDto.getLastName() != null) {
-                coachToUpdate.setLastName(updatedDto.getLastName());
-            }
-
-            if(updatedDto.getSalary() != null) {
-                coachToUpdate.setSalary(updatedDto.getSalary());
-            }
-
+            coachToUpdate.of(updatedDto);
             return CoachDto.of(coachRepository.save(coachToUpdate));
         }
 
@@ -68,7 +60,9 @@ public class CoachService {
     public List<MemberDto> getMembers(long coachId) {
         var optionalCoach = coachRepository.findById(coachId);
         if(optionalCoach.isPresent()) {
-            return optionalCoach.get().getMembers().stream().map(MemberDto::of).toList();
+            return optionalCoach.get().getMembers().stream()
+                    .map(MemberDto::of)
+                    .toList();
         }
 
         throw new RuntimeException("Coach with the given id does not exist");
@@ -77,7 +71,8 @@ public class CoachService {
     public MemberDto saveCoachNewMember(long coachId, MemberDto dto) {
         var optionalCoach = coachRepository.findById(coachId);
         if(optionalCoach.isPresent()) {
-            Member member = Member.of(dto);
+            Member member = new Member();
+            member.of(dto);
             member.setCoach(optionalCoach.get());
             member.setClub(optionalCoach.get().getClub());
             return MemberDto.of(memberRepository.save(member));
@@ -90,15 +85,36 @@ public class CoachService {
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
 
-        if(optionalCoach.isPresent()) {
+        if (optionalCoach.isPresent()) {
             if (optionalMember.isPresent()) {
-                optionalMember.get().setCoach(optionalCoach.get());
-                optionalMember.get().setClub(optionalCoach.get().getClub());
-                return MemberDto.of(memberRepository.save(optionalMember.get()));
+                if(optionalMember.get().getCoach() == null) {
+                    optionalMember.get().setCoach(optionalCoach.get());
+                    optionalMember.get().setClub(optionalCoach.get().getClub());
+                    return MemberDto.of(memberRepository.save(optionalMember.get()));
+                }
+                throw new RuntimeException("This member already has a coach");
             }
             throw new RuntimeException("Member with the given id does not exist");
         }
+        throw new RuntimeException("Coach with the given id does not exist");
+    }
 
+    public List<MemberDto> removeCoachMember(long coachId, long memberId) {
+        var optionalCoach = coachRepository.findById(coachId);
+        var optionalMember = memberRepository.findById(memberId);
+        if(optionalCoach.isPresent()) {
+            if (optionalMember.isPresent()) {
+                if (optionalCoach.get().getMembers().contains(optionalMember.get())){
+                    optionalCoach.get().getMembers().remove(optionalMember.get());
+                    optionalMember.get().setCoach(null);
+                    memberRepository.save(optionalMember.get());
+                    Coach updatedCoach = coachRepository.save(optionalCoach.get());
+                    return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
+                }
+                throw new RuntimeException("This coach does not have a member with the given id");
+            }
+            throw new RuntimeException("Member with the given id does not exist");
+        }
         throw new RuntimeException("Coach with the given id does not exist");
     }
 }

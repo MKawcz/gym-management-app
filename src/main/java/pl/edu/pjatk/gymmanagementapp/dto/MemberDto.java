@@ -1,9 +1,8 @@
 package pl.edu.pjatk.gymmanagementapp.dto;
 
 import lombok.Data;
-import pl.edu.pjatk.gymmanagementapp.entity.Coach;
 import pl.edu.pjatk.gymmanagementapp.entity.Member;
-import pl.edu.pjatk.gymmanagementapp.entity.MembershipType;
+import pl.edu.pjatk.gymmanagementapp.entity.enums.MembershipType;
 
 @Data
 public class MemberDto {

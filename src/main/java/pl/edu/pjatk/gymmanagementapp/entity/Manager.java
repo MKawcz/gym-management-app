@@ -11,26 +11,24 @@ public class Manager{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idManager;
-
     private String firstName;
-
     private String lastName;
-
     private Integer salary;
 
-    @OneToOne(mappedBy = "manager")
-    private Operator operator;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="idClub")
+    @JoinColumn(name="id_club")
     private Club club;
 
-    public static Manager of(ManagerDto dto) {
-        Manager manager = new Manager();
-        manager.setFirstName(dto.getFirstName());
-        manager.setLastName(dto.getLastName());
-        manager.setSalary(dto.getSalary());
+    public void of(ManagerDto dto) {
+        if(dto.getFirstName() != null) {
+            this.setFirstName(dto.getFirstName());
+        }
+        if(dto.getLastName() != null) {
+            this.setLastName(dto.getLastName());
+        }
 
-        return manager;
+        if(dto.getSalary() != null) {
+            this.setSalary(dto.getSalary());
+        }
     }
 }

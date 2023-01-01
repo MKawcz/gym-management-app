@@ -13,16 +13,11 @@ public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idClub;
-
     private String name;
 
-    private String streetName;
-
-    private String streetNumber;
-
-    private String postalCode;
-
-    private String city;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_address")
+    private Address address;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "club")
     private List<Manager> managers;
@@ -33,16 +28,10 @@ public class Club {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "club")
     private List<Member> members;
 
-    public static Club of(ClubDto dto) {
-        Club club = new Club();
-        club.setName(dto.getName());
-        club.setStreetName(dto.getStreetName());
-        club.setStreetNumber(dto.getStreetNumber());
-        club.setPostalCode(dto.getPostalCode());
-        club.setCity(dto.getCity());
-
-        return club;
+    public void of(ClubDto dto) {
+        if(dto.getName() != null) {
+            this.setName(dto.getName());
+        }
     }
 
-    //todo stwórz klase address
 }
