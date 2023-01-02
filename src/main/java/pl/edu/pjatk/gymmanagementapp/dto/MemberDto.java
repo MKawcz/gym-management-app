@@ -10,6 +10,8 @@ public class MemberDto {
     private Long idMember;
     private String firstName;
     private String lastName;
+    private String email;
+    private String password;
     private MembershipType membershipType;
 
     public static MemberDto of(Member member) {
@@ -18,6 +20,8 @@ public class MemberDto {
         dto.setFirstName(member.getFirstName());
         dto.setLastName(member.getLastName());
         dto.setMembershipType(member.getMembershipType());
+        dto.setEmail(member.getEmail());
+        dto.setPassword(member.getPassword());
 
         return dto;
     }

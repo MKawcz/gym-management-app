@@ -68,18 +68,18 @@ public class CoachService {
         throw new RuntimeException("Coach with the given id does not exist");
     }
 
-    public MemberDto saveCoachNewMember(long coachId, MemberDto dto) {
-        var optionalCoach = coachRepository.findById(coachId);
-        if(optionalCoach.isPresent()) {
-            Member member = new Member();
-            member.of(dto);
-            member.setCoach(optionalCoach.get());
-            member.setClub(optionalCoach.get().getClub());
-            return MemberDto.of(memberRepository.save(member));
-        }
-
-        throw new RuntimeException("Coach with the given id does not exist");
-    }
+//    public MemberDto saveCoachNewMember(long coachId, MemberDto dto) {
+//        var optionalCoach = coachRepository.findById(coachId);
+//        if(optionalCoach.isPresent()) {
+//            Member member = new Member();
+//            member.of(dto);
+//            member.setCoach(optionalCoach.get());
+//            member.setClub(optionalCoach.get().getClub());
+//            return MemberDto.of(memberRepository.save(member));
+//        }
+//
+//        throw new RuntimeException("Coach with the given id does not exist");
+//    }
 
     public MemberDto saveCoachExistingMember(long coachId, long memberId) {
         var optionalCoach = coachRepository.findById(coachId);

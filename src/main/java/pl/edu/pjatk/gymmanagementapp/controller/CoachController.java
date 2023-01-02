@@ -11,56 +11,56 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/coaches")
+@RequestMapping("/clubs")
 @RequiredArgsConstructor
 public class CoachController {
 
     private final CoachService coachService;
 
-    @PostMapping
-    public ResponseEntity<CoachDto> saveCoach(@RequestBody CoachDto dto) {
-        return ResponseEntity.ok(coachService.saveCoach(dto));
+    @PostMapping("/{clubId}/coaches")
+    public ResponseEntity<CoachDto> saveCoach(@PathVariable long clubId, @RequestBody CoachDto dto) {
+        return ResponseEntity.ok(coachService.saveCoach(clubId, dto));
     }
 
-    @GetMapping
-    public ResponseEntity<List<CoachDto>> getAllCoaches() {
-        return ResponseEntity.ok(coachService.getAllCoaches());
+    @GetMapping("/{clubId}/coaches")
+    public ResponseEntity<List<CoachDto>> getAllCoaches(@PathVariable long clubId) {
+        return ResponseEntity.ok(coachService.getAllCoaches(clubId));
     }
 
-    @PutMapping("/{coachId}")
-    public ResponseEntity<CoachDto> updateCoach(@PathVariable long coachId, @RequestBody CoachDto dto) {
-        return ResponseEntity.ok(coachService.updateCoach(coachId, dto));
+    @PutMapping("/{clubId}/coaches/{coachId}")
+    public ResponseEntity<CoachDto> updateCoach(@PathVariable long clubId, @PathVariable long coachId, @RequestBody CoachDto dto) {
+        return ResponseEntity.ok(coachService.updateCoach(clubId, coachId, dto));
     }
 
-    @DeleteMapping("/{coachId}")
-    public ResponseEntity<String> deleteCoach(@PathVariable long coachId) {
-        coachService.deleteCoach(coachId);
+    @DeleteMapping("/{clubId}/coaches/{coachId}")
+    public ResponseEntity<String> deleteCoach(@PathVariable long clubId, @PathVariable long coachId) {
+        coachService.deleteCoach(clubId, coachId);
         return ResponseEntity.ok("Coach of id: " + coachId + " has been deleted");
     }
 
-    @GetMapping("/{coachId}")
-    public ResponseEntity<CoachDto> getCoach(@PathVariable long coachId) {
-        return ResponseEntity.ok(coachService.getCoach(coachId));
+    @GetMapping("/{clubId}/coaches/{coachId}")
+    public ResponseEntity<CoachDto> getCoach(@PathVariable long clubId, @PathVariable long coachId) {
+        return ResponseEntity.ok(coachService.getCoach(clubId, coachId));
     }
 
-    @GetMapping("/{coachId}/members")
-    public ResponseEntity<List<MemberDto>> getCoachMembers(@PathVariable long coachId) {
-        return ResponseEntity.ok(coachService.getMembers(coachId));
+    @GetMapping("/{clubId}/coaches/{coachId}/members")
+    public ResponseEntity<List<MemberDto>> getCoachMembers(@PathVariable long clubId, @PathVariable long coachId) {
+        return ResponseEntity.ok(coachService.getMembers(clubId, coachId));
     }
 
-    @PostMapping("/{coachId}/members")
-    public ResponseEntity<MemberDto> saveCoachNewMember(@PathVariable long coachId, @RequestBody MemberDto dto) {
-        return ResponseEntity.ok(coachService.saveCoachNewMember(coachId, dto));
+//    @PostMapping("/{coachId}/members")
+//    public ResponseEntity<MemberDto> saveCoachNewMember(@PathVariable long coachId, @RequestBody MemberDto dto) {
+//        return ResponseEntity.ok(coachService.saveCoachNewMember(coachId, dto));
+//    }
+
+    @PostMapping("/{clubId}/coaches/{coachId}/members/{memberId}")
+    public ResponseEntity<MemberDto> saveCoachExistingMember(@PathVariable long clubId, @PathVariable long coachId, @PathVariable long memberId) {
+        return ResponseEntity.ok(coachService.saveCoachExistingMember(clubId, coachId, memberId));
     }
 
-    @PostMapping("/{coachId}/members/{memberId}")
-    public ResponseEntity<MemberDto> saveCoachExistingMember(@PathVariable long coachId, @PathVariable long memberId) {
-        return ResponseEntity.ok(coachService.saveCoachExistingMember(coachId, memberId));
-    }
-
-    @PutMapping("/{coachId}/members/{memberId}")
-    public ResponseEntity<List<MemberDto>> removeCoachMember(@PathVariable long coachId, @PathVariable long memberId) {
-        return ResponseEntity.ok(coachService.removeCoachMember(coachId, memberId));
+    @PutMapping("/{clubId}/coaches/{coachId}/{coachId}/members/{memberId}")
+    public ResponseEntity<List<MemberDto>> removeCoachMember(@PathVariable long clubId, @PathVariable long coachId, @PathVariable long memberId) {
+        return ResponseEntity.ok(coachService.removeCoachMember(clubId, coachId, memberId));
     }
 
 }

@@ -61,38 +61,38 @@ public class ClubService {
         throw new RuntimeException("Club with the given id does not exist");
     }
 
-    public List<MemberDto> getClubMembers(long clubId) {
-        var optionalClub = clubRepository.findById(clubId);
-        if(optionalClub.isPresent()) {
-            return optionalClub.get().getMembers().stream()
-                    .map(MemberDto::of).
-                    toList();
-        }
-
-        throw new RuntimeException("Club with the given id does not exist");
-    }
-
-    public List<CoachDto> getClubCoaches(long clubId) {
-        var optionalClub = clubRepository.findById(clubId);
-        if(optionalClub.isPresent()) {
-            return optionalClub.get().getCoaches().stream()
-                    .map(CoachDto::of)
-                    .toList();
-        }
-
-        throw new RuntimeException("Club with the given id does not exist");
-    }
-
-    public List<ManagerDto> getClubManagers(long clubId) {
-        var optionalClub = clubRepository.findById(clubId);
-        if(optionalClub.isPresent()) {
-            return optionalClub.get().getManagers().stream()
-                    .map(ManagerDto::of)
-                    .toList();
-        }
-
-        throw new RuntimeException("Club with the given id does not exist");
-    }
+//    public List<MemberDto> getClubMembers(long clubId) {
+//        var optionalClub = clubRepository.findById(clubId);
+//        if(optionalClub.isPresent()) {
+//            return optionalClub.get().getMembers().stream()
+//                    .map(MemberDto::of).
+//                    toList();
+//        }
+//
+//        throw new RuntimeException("Club with the given id does not exist");
+//    }
+//
+//    public List<CoachDto> getClubCoaches(long clubId) {
+//        var optionalClub = clubRepository.findById(clubId);
+//        if(optionalClub.isPresent()) {
+//            return optionalClub.get().getCoaches().stream()
+//                    .map(CoachDto::of)
+//                    .toList();
+//        }
+//
+//        throw new RuntimeException("Club with the given id does not exist");
+//    }
+//
+//    public List<ManagerDto> getClubManagers(long clubId) {
+//        var optionalClub = clubRepository.findById(clubId);
+//        if(optionalClub.isPresent()) {
+//            return optionalClub.get().getManagers().stream()
+//                    .map(ManagerDto::of)
+//                    .toList();
+//        }
+//
+//        throw new RuntimeException("Club with the given id does not exist");
+//    }
 
     public AddressDto getClubAddress(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
@@ -132,34 +132,34 @@ public class ClubService {
     //do klubu mozna przypisac istniejacego lub nowego membera (tak samo jak w coach)
     //oraz mozna go tworzyc i usuwac od strony samego member service
 
-    public MemberDto saveClubNewMember(long clubId, MemberDto dto) {
-        var optionalClub = clubRepository.findById(clubId);
-        if(optionalClub.isPresent()) {
-            Member member = new Member();
-            member.of(dto);
-            member.setClub(optionalClub.get());
-            return MemberDto.of(memberRepository.save(member));
-        }
-
-        throw new RuntimeException("Club with the given id does not exist");
-    }
-
-    public List<MemberDto> removeClubMember(long clubId, long memberId) {
-        var optionalClub = clubRepository.findById(clubId);
-        var optionalMember = memberRepository.findById(memberId);
-        if(optionalClub.isPresent()) {
-            if (optionalMember.isPresent()) {
-                if (optionalClub.get().getMembers().contains(optionalMember.get())) {
-                    optionalClub.get().getMembers().remove(optionalMember.get());
-                    optionalMember.get().setClub(null);
-                    memberRepository.save(optionalMember.get());
-                    Club updatedClub = clubRepository.save(optionalClub.get());
-                    return updatedClub.getMembers().stream().map(MemberDto::of).toList();
-                }
-                throw new RuntimeException("This Club does not have a member with the given id");
-            }
-            throw new RuntimeException("Member with the given id does not exist");
-        }
-        throw new RuntimeException("Club with the given id does not exist");
-    }
+//    public MemberDto saveClubNewMember(long clubId, MemberDto dto) {
+//        var optionalClub = clubRepository.findById(clubId);
+//        if(optionalClub.isPresent()) {
+//            Member member = new Member();
+//            member.of(dto);
+//            member.setClub(optionalClub.get());
+//            return MemberDto.of(memberRepository.save(member));
+//        }
+//
+//        throw new RuntimeException("Club with the given id does not exist");
+//    }
+//
+//    public List<MemberDto> removeClubMember(long clubId, long memberId) {
+//        var optionalClub = clubRepository.findById(clubId);
+//        var optionalMember = memberRepository.findById(memberId);
+//        if(optionalClub.isPresent()) {
+//            if (optionalMember.isPresent()) {
+//                if (optionalClub.get().getMembers().contains(optionalMember.get())) {
+//                    optionalClub.get().getMembers().remove(optionalMember.get());
+//                    optionalMember.get().setClub(null);
+//                    memberRepository.save(optionalMember.get());
+//                    Club updatedClub = clubRepository.save(optionalClub.get());
+//                    return updatedClub.getMembers().stream().map(MemberDto::of).toList();
+//                }
+//                throw new RuntimeException("This Club does not have a member with the given id");
+//            }
+//            throw new RuntimeException("Member with the given id does not exist");
+//        }
+//        throw new RuntimeException("Club with the given id does not exist");
+//    }
 }

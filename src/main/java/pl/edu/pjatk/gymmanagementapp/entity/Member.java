@@ -14,6 +14,9 @@ public class Member {
     Long idMember;
     private String firstName;
     private String lastName;
+    private String email;
+    private String password;
+    //todo hashowanie password
 
     @Enumerated(EnumType.STRING)
     private MembershipType membershipType;
@@ -35,6 +38,12 @@ public class Member {
         }
         if(dto.getMembershipType() != null) {
             this.setMembershipType(dto.getMembershipType());
+        }
+        if(dto.getEmail() != null) {
+            this.setEmail(dto.getEmail());
+        }
+        if(dto.getPassword() != null) {
+            this.setEmail(dto.getPassword());
         }
     }
 
