@@ -9,36 +9,36 @@ import pl.edu.pjatk.gymmanagementapp.service.ManagerService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clubs")
+@RequestMapping("/clubs/{clubId}/managers")
 @RequiredArgsConstructor
 public class ManagerController {
 
     private final ManagerService managerService;
 
-    @PostMapping("/{clubId}/managers")
+    @PostMapping
     public ResponseEntity<ManagerDto> saveManager(@PathVariable long clubId, @RequestBody ManagerDto dto) {
         return ResponseEntity.ok(managerService.saveManager(clubId, dto));
     }
 
-    @GetMapping("/{clubId}/managers")
+    @GetMapping
     public ResponseEntity<List<ManagerDto>> getAllManagers(@PathVariable long clubId){
         return ResponseEntity.ok(managerService.getClubManagers(clubId));
     }
 
-    @PutMapping("/{clubId}/managers/{managerId}")
+    @PutMapping("/{managerId}")
     public ResponseEntity<ManagerDto> updateManager(@PathVariable long clubId, @PathVariable long managerId, @RequestBody ManagerDto dto) {
-        return ResponseEntity.ok(managerService.updateManager(clubId, managerId, dto));
+        return ResponseEntity.ok(managerService.updateClubManager(clubId, managerId, dto));
     }
 
-    @DeleteMapping("/{clubId}/managers/{managerId}")
+    @DeleteMapping("/{managerId}")
     public ResponseEntity<String> deleteManager(@PathVariable long clubId, @PathVariable long managerId) {
-        managerService.deleteManager(clubId, managerId);
+        managerService.deleteClubManager(clubId, managerId);
         return ResponseEntity.ok("Manager of id: " + managerId + " has been deleted");
     }
 
-    @GetMapping("/{clubId}/managers/{managerId}")
+    @GetMapping("/{managerId}")
     public ResponseEntity<ManagerDto> getManager(@PathVariable long clubId, @PathVariable long managerId) {
-        return ResponseEntity.ok(managerService.getManager(clubId, managerId));
+        return ResponseEntity.ok(managerService.getClubManager(clubId, managerId));
     }
 
 }

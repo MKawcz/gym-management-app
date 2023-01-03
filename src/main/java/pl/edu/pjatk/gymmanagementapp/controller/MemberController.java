@@ -10,36 +10,46 @@ import pl.edu.pjatk.gymmanagementapp.service.MemberService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clubs")
+@RequestMapping("/clubs/{clubId}/members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/{clubId}/members")
+    @PostMapping
     public ResponseEntity<MemberDto> saveMember(@PathVariable long clubId, @RequestBody MemberDto dto) {
         return ResponseEntity.ok(memberService.saveMember(clubId, dto));
     }
 
-    @GetMapping("/{clubId}/members")
-    public ResponseEntity<List<MemberDto>> getAllMembers(@PathVariable long clubId){
-        return ResponseEntity.ok(memberService.getAllMembers(clubId));
+    @GetMapping
+    public ResponseEntity<List<MemberDto>> getClubMembers(@PathVariable long clubId){
+        return ResponseEntity.ok(memberService.getClubMembers(clubId));
     }
 
-    @PutMapping("/{clubId}/members/{memberId}")
-    public ResponseEntity<MemberDto> updateMember(@PathVariable long clubId, @PathVariable long memberId, @RequestBody MemberDto dto) {
-        return ResponseEntity.ok(memberService.updateMember(clubId, memberId, dto));
+    @PutMapping("/{memberId}")
+    public ResponseEntity<MemberDto> updateClubMember(@PathVariable long clubId, @PathVariable long memberId, @RequestBody MemberDto dto) {
+        return ResponseEntity.ok(memberService.updateClubMember(clubId, memberId, dto));
     }
 
-    @DeleteMapping("/{clubId}/members/{memberId}")
-    public ResponseEntity<String> deleteMember(@PathVariable long clubId, @PathVariable long memberId) {
-        memberService.deleteMember(clubId, memberId);
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> deleteClubMember(@PathVariable long clubId, @PathVariable long memberId) {
+        memberService.deleteClubMember(clubId, memberId);
         return ResponseEntity.ok("Member of id:" + memberId + " has been deleted");
     }
 
-    @GetMapping("/{clubId}/members/{memberId}")
-    public ResponseEntity<MemberDto> getMember(@PathVariable long clubId, @PathVariable long memberId) {
-        return ResponseEntity.ok(memberService.getMember(clubId, memberId));
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberDto> getClubMember(@PathVariable long clubId, @PathVariable long memberId) {
+        return ResponseEntity.ok(memberService.getClubMember(clubId, memberId));
+    }
+
+    @PostMapping
+    public ResponseEntity<MemberDto> saveClubExistingMember(@PathVariable long clubId, @RequestParam long memberId) {
+        return ResponseEntity.ok(memberService.saveClubExistingMember(clubId, memberId));
+    }
+
+    @PutMapping
+    public ResponseEntity<List<MemberDto>> removeClubMember(@PathVariable long clubId, @RequestParam long memberId) {
+        return ResponseEntity.ok(memberService.removeClubMember(clubId, memberId));
     }
 
 }

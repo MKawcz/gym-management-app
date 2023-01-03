@@ -41,21 +41,6 @@ public class ClubController {
         return ResponseEntity.ok(clubService.getClub(clubId));
     }
 
-//    @GetMapping("/{clubId}/members")
-//    public ResponseEntity<List<MemberDto>> getClubMembers(@PathVariable long clubId) {
-//        return ResponseEntity.ok(clubService.getClubMembers(clubId));
-//    }
-//
-//    @GetMapping("/{clubId}/coaches")
-//    public ResponseEntity<List<CoachDto>> getClubCoaches(@PathVariable long clubId) {
-//        return ResponseEntity.ok(clubService.getClubCoaches(clubId));
-//    }
-//
-//    @GetMapping("/{clubId}/managers")
-//    public ResponseEntity<List<ManagerDto>> getClubManagers(@PathVariable long clubId) {
-//        return ResponseEntity.ok(clubService.getClubManagers(clubId));
-//    }
-
     @GetMapping("/{clubId}/address")
     public ResponseEntity<AddressDto> getClubAddress(@PathVariable long clubId) {
         return ResponseEntity.ok(clubService.getClubAddress(clubId));

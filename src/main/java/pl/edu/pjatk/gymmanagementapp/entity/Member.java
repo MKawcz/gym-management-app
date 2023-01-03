@@ -43,7 +43,7 @@ public class Member {
             this.setEmail(dto.getEmail());
         }
         if(dto.getPassword() != null) {
-            this.setEmail(dto.getPassword());
+            this.setPassword(dto.getPassword());
         }
     }
 
