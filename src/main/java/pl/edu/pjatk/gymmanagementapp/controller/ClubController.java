@@ -1,6 +1,8 @@
 package pl.edu.pjatk.gymmanagementapp.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
@@ -16,7 +18,7 @@ public class ClubController {
     private final ClubService clubService;
 
     @PostMapping
-    public ResponseEntity<ClubDto> saveClub(@RequestBody ClubDto dto) {
+    public ResponseEntity<ClubDto> saveClub(@Valid @RequestBody ClubDto dto) {
         return ResponseEntity.ok(clubService.saveClub(dto));
     }
 
@@ -26,7 +28,7 @@ public class ClubController {
     }
 
     @PutMapping("/{clubId}")
-    public ResponseEntity<ClubDto> updateClub(@PathVariable long clubId, @RequestBody ClubDto dto) {
+    public ResponseEntity<ClubDto> updateClub(@PathVariable long clubId, @Valid @RequestBody ClubDto dto) {
         return ResponseEntity.ok(clubService.updateClub(clubId, dto));
     }
 
@@ -47,9 +49,18 @@ public class ClubController {
     }
 
     @PostMapping("/{clubId}/address")
-    public ResponseEntity<AddressDto> saveClubAddress(@PathVariable long clubId, @RequestBody AddressDto dto) {
+    public ResponseEntity<AddressDto> saveClubAddress(@PathVariable long clubId, @Valid @RequestBody AddressDto dto) {
         return ResponseEntity.ok(clubService.saveClubAddress(clubId, dto));
     }
 
+    @PutMapping("/{clubId}/assignMember/")
+    public ResponseEntity<List<MemberDto>> assignMemberToClub(@PathVariable long clubId, @RequestParam long memberId) {
+        return ResponseEntity.ok(clubService.assignMemberToClub(clubId, memberId));
+    }
+
+    @PutMapping("/{clubId}/removeMember/")
+    public ResponseEntity<List<MemberDto>> removeMemberFromClub(@PathVariable long clubId, @RequestParam long memberId) {
+        return ResponseEntity.ok(clubService.removeMemberFromClub(clubId, memberId));
+    }
 
 }

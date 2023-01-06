@@ -28,10 +28,9 @@ public class Club {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "club")
     private List<Member> members;
 
+    //todo zmien of
     public void of(ClubDto dto) {
-        if(dto.getName() != null) {
-            this.setName(dto.getName());
-        }
+        this.setName(dto.getName());
     }
 
 }

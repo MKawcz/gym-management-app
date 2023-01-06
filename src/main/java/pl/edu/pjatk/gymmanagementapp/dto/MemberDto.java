@@ -1,6 +1,13 @@
 package pl.edu.pjatk.gymmanagementapp.dto;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+import pl.edu.pjatk.gymmanagementapp.anntotation.EnumNamePattern;
 import pl.edu.pjatk.gymmanagementapp.entity.Member;
 import pl.edu.pjatk.gymmanagementapp.entity.enums.MembershipType;
 
@@ -8,10 +15,25 @@ import pl.edu.pjatk.gymmanagementapp.entity.enums.MembershipType;
 public class MemberDto {
 
     private Long idMember;
+
+    @NotBlank(message = "Field firstName cannot be blank and cannot be null")
+    @Size(min=2, max=50, message = "Field firstName should be between 2 and 50 characters long")
     private String firstName;
+
+    @NotBlank(message = "Field lastName cannot be blank and cannot be null")
+    @Size(min=2, max=50, message = "Field lastName should be between 2 and 50 characters long")
     private String lastName;
+
+    @NotBlank(message = "Field email cannot be blank and cannot be null")
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Provided email has an invalid format")
     private String email;
+
+    @NotBlank(message = "Field password cannot be blank and cannot be null")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z]).{6,16}$", message = "Password should be between 6 and 16 " +
+            "characters long, contain at least 1 number and at least 1 uppercase letter")
     private String password;
+
+    @EnumNamePattern(regexp = "DAILY|MONTHLY|SIX_MONTH|ANNUAL")                 //todo popraw walidacje
     private MembershipType membershipType;
 
     public static MemberDto of(Member member) {

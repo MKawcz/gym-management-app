@@ -30,21 +30,10 @@ public class Member {
     private Club club;
 
     public void of(MemberDto dto) {
-        if(dto.getFirstName() != null) {
-            this.setFirstName(dto.getFirstName());
-        }
-        if(dto.getLastName() != null) {
-            this.setLastName(dto.getLastName());
-        }
-        if(dto.getMembershipType() != null) {
-            this.setMembershipType(dto.getMembershipType());
-        }
-        if(dto.getEmail() != null) {
-            this.setEmail(dto.getEmail());
-        }
-        if(dto.getPassword() != null) {
-            this.setPassword(dto.getPassword());
-        }
+        this.setFirstName(dto.getFirstName());
+        this.setLastName(dto.getLastName());
+        this.setMembershipType(dto.getMembershipType());
+        this.setEmail(dto.getEmail());
+        this.setPassword(dto.getPassword());
     }
-
 }

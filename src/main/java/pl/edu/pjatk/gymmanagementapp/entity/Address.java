@@ -13,23 +13,15 @@ public class Address {
     private Long addressId;
     private String streetName;
     private Integer streetNumber;
-    private String postalCode;
+    private String zipCode;
     private String city;
     @OneToOne(mappedBy = "address")
     private Club club;
 
     public void of(AddressDto dto) {
-        if(dto.getStreetName() != null) {
-            this.setStreetName(dto.getStreetName());
-        }
-        if(dto.getStreetNumber() != null) {
-            this.setStreetNumber(dto.getStreetNumber());
-        }
-        if(dto.getPostalCode() != null) {
-            this.setPostalCode(dto.getPostalCode());
-        }
-        if(dto.getCity() != null) {
-            this.setCity(dto.getCity());
-        }
+        this.setStreetName(dto.getStreetName());
+        this.setStreetNumber(dto.getStreetNumber());
+        this.setZipCode(dto.getZipCode());
+        this.setCity(dto.getCity());
     }
 }

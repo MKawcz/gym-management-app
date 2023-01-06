@@ -1,8 +1,10 @@
 package pl.edu.pjatk.gymmanagementapp.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
 import pl.edu.pjatk.gymmanagementapp.service.MemberService;
@@ -17,7 +19,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberDto> saveMember(@PathVariable long clubId, @RequestBody MemberDto dto) {
+    public ResponseEntity<MemberDto> saveMember(@PathVariable long clubId, @Valid @RequestBody MemberDto dto) {
         return ResponseEntity.ok(memberService.saveMember(clubId, dto));
     }
 
@@ -27,7 +29,7 @@ public class MemberController {
     }
 
     @PutMapping("/{memberId}")
-    public ResponseEntity<MemberDto> updateClubMember(@PathVariable long clubId, @PathVariable long memberId, @RequestBody MemberDto dto) {
+    public ResponseEntity<MemberDto> updateClubMember(@PathVariable long clubId, @PathVariable long memberId, @Valid @RequestBody MemberDto dto) {
         return ResponseEntity.ok(memberService.updateClubMember(clubId, memberId, dto));
     }
 
@@ -40,16 +42,6 @@ public class MemberController {
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberDto> getClubMember(@PathVariable long clubId, @PathVariable long memberId) {
         return ResponseEntity.ok(memberService.getClubMember(clubId, memberId));
-    }
-
-    @PostMapping
-    public ResponseEntity<MemberDto> saveClubExistingMember(@PathVariable long clubId, @RequestParam long memberId) {
-        return ResponseEntity.ok(memberService.saveClubExistingMember(clubId, memberId));
-    }
-
-    @PutMapping
-    public ResponseEntity<List<MemberDto>> removeClubMember(@PathVariable long clubId, @RequestParam long memberId) {
-        return ResponseEntity.ok(memberService.removeClubMember(clubId, memberId));
     }
 
 }

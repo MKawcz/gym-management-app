@@ -25,6 +25,10 @@ public class MemberService {
             throw new RuntimeException("Club with the given id does not exist");
         }
 
+        if (memberRepository.getMemberByEmail(dto.getEmail()).isPresent()){
+            throw new RuntimeException("Member with the given email already exists");
+        }
+
         Member member = new Member();
         member.of(dto);
         member.setClub(optionalClub.get());
@@ -104,54 +108,5 @@ public class MemberService {
 
     }
 
-    public MemberDto saveClubExistingMember(long clubId, long memberId) {
-        var optionalClub = clubRepository.findById(clubId);
-        var optionalMember = memberRepository.findById(memberId);
-
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalMember.isEmpty()) {
-            throw new RuntimeException("Member with the given id does not exist");
-        }
-        if (optionalMember.get().getClub() != null) {
-            throw new RuntimeException("This member already has a club");
-        }
-        if (optionalClub.get().getMembers().contains(optionalMember.get())) {
-            throw new RuntimeException("This club already has a member with the given id");
-        }
-
-        optionalMember.get().setClub(optionalClub.get());
-        optionalClub.get().getMembers().add(optionalMember.get());
-        clubRepository.save(optionalClub.get());
-
-        return MemberDto.of(memberRepository.save(optionalMember.get()));
-    }
-
-    public List<MemberDto> removeClubMember(long clubId, long memberId) {
-        var optionalClub = clubRepository.findById(clubId);
-        var optionalMember = memberRepository.findById(memberId);
-
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalMember.isEmpty()) {
-            throw new RuntimeException("Member with the given id does not exist");
-        }
-        if (!optionalClub.get().getMembers().contains(optionalMember.get())){
-            throw new RuntimeException("This club does not have a member with the given id");
-        }
-        if (optionalMember.get().getCoach().getIdCoach() != clubId) {
-            throw new RuntimeException("This member does not have a club with the given id");
-        }
-
-        optionalClub.get().getMembers().remove(optionalMember.get());
-        optionalMember.get().setClub(null);
-        optionalMember.get().setCoach(null);
-        Club updatedClub = clubRepository.save(optionalClub.get());
-        memberRepository.save(optionalMember.get());
-
-        return updatedClub.getMembers().stream().map(MemberDto::of).toList();
-    }
 }
 

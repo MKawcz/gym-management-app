@@ -1,6 +1,8 @@
 package pl.edu.pjatk.gymmanagementapp.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
@@ -18,7 +20,7 @@ public class CoachController {
     private final CoachService coachService;
 
     @PostMapping
-    public ResponseEntity<CoachDto> saveCoach(@PathVariable long clubId, @RequestBody CoachDto dto) {
+    public ResponseEntity<CoachDto> saveCoach(@PathVariable long clubId, @Valid @RequestBody CoachDto dto) {
         return ResponseEntity.ok(coachService.saveCoach(clubId, dto));
     }
 
@@ -28,7 +30,7 @@ public class CoachController {
     }
 
     @PutMapping("/{coachId}")
-    public ResponseEntity<CoachDto> updateCoach(@PathVariable long clubId, @PathVariable long coachId, @RequestBody CoachDto dto) {
+    public ResponseEntity<CoachDto> updateCoach(@PathVariable long clubId, @PathVariable long coachId, @Valid @RequestBody CoachDto dto) {
         return ResponseEntity.ok(coachService.updateClubCoach(clubId, coachId, dto));
     }
 
@@ -43,19 +45,19 @@ public class CoachController {
         return ResponseEntity.ok(coachService.getClubCoach(clubId, coachId));
     }
 
-    @GetMapping("/{coachId}/coachmembers")
+    @GetMapping("/{coachId}/coachMembers")
     public ResponseEntity<List<MemberDto>> getCoachMembers(@PathVariable long clubId, @PathVariable long coachId) {
         return ResponseEntity.ok(coachService.getCoachMembers(clubId, coachId));
     }
 
-    @PostMapping("/{coachId}/coachmembers/{memberId}")
-    public ResponseEntity<MemberDto> saveCoachExistingMember(@PathVariable long clubId, @PathVariable long coachId, @PathVariable long memberId) {
-        return ResponseEntity.ok(coachService.saveCoachExistingMember(clubId, coachId, memberId));
+    @PutMapping("/{coachId}/assignCoachMember/")
+    public ResponseEntity<MemberDto> assignMemberToCoach(@PathVariable long clubId, @PathVariable long coachId, @RequestParam long memberId) {
+        return ResponseEntity.ok(coachService.assignMemberToCoach(clubId, coachId, memberId));
     }
 
-    @PutMapping("/{coachId}/coachmembers/{memberId}")
-    public ResponseEntity<List<MemberDto>> removeCoachMember(@PathVariable long clubId, @PathVariable long coachId, @PathVariable long memberId) {
-        return ResponseEntity.ok(coachService.removeCoachMember(clubId, coachId, memberId));
+    @PutMapping("/{coachId}/removeCoachMember/")
+    public ResponseEntity<List<MemberDto>> removeMemberFromCoach(@PathVariable long clubId, @PathVariable long coachId, @RequestParam long memberId) {
+        return ResponseEntity.ok(coachService.removeMemberFromCoach(clubId, coachId, memberId));
     }
 
 }

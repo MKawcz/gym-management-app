@@ -1,5 +1,6 @@
 package pl.edu.pjatk.gymmanagementapp.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class ManagerController {
     private final ManagerService managerService;
 
     @PostMapping
-    public ResponseEntity<ManagerDto> saveManager(@PathVariable long clubId, @RequestBody ManagerDto dto) {
+    public ResponseEntity<ManagerDto> saveManager(@PathVariable long clubId, @Valid @RequestBody ManagerDto dto) {
         return ResponseEntity.ok(managerService.saveManager(clubId, dto));
     }
 
@@ -26,7 +27,7 @@ public class ManagerController {
     }
 
     @PutMapping("/{managerId}")
-    public ResponseEntity<ManagerDto> updateManager(@PathVariable long clubId, @PathVariable long managerId, @RequestBody ManagerDto dto) {
+    public ResponseEntity<ManagerDto> updateManager(@PathVariable long clubId, @PathVariable long managerId, @Valid @RequestBody ManagerDto dto) {
         return ResponseEntity.ok(managerService.updateClubManager(clubId, managerId, dto));
     }
 

@@ -1,6 +1,7 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
 import pl.edu.pjatk.gymmanagementapp.entity.Address;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ClubService {
     private final ClubRepository clubRepository;
     private final AddressRepository addressRepository;
+    private final MemberRepository memberRepository;
 
     public ClubDto saveClub(ClubDto dto) {
         Club club = new Club();
@@ -48,7 +50,13 @@ public class ClubService {
     }
 
     public void deleteClub(long clubId) {
-        clubRepository.deleteById(clubId);
+        var optionalClub = clubRepository.findById(clubId);
+
+        if (optionalClub.isEmpty()) {
+            throw new RuntimeException("Club with the given id does not exist");
+        }
+
+        clubRepository.delete(optionalClub.get());
     }
 
     public ClubDto getClub(long clubId) {
@@ -69,6 +77,9 @@ public class ClubService {
 
         if (optionalClub.isEmpty()) {
             throw new RuntimeException("Club with the given id does not exist");
+        }
+        if (optionalClub.get().getAddress() == null) {
+            throw new RuntimeException("Club with the given id does not have an address");
         }
 
         return AddressDto.of(optionalClub.get().getAddress());
@@ -98,6 +109,59 @@ public class ClubService {
         club.setAddress(address);
         Club clubWithNewAddress = clubRepository.save(club);
         return clubWithNewAddress;
+    }
+
+    public List<MemberDto>  assignMemberToClub(long clubId, long memberId) {
+        var optionalClub = clubRepository.findById(clubId);
+        var optionalMember = memberRepository.findById(memberId);
+
+        if (optionalClub.isEmpty()) {
+            throw new RuntimeException("Club with the given id does not exist");
+        }
+        if (optionalMember.isEmpty()) {
+            throw new RuntimeException("Member with the given id does not exist");
+        }
+        if (optionalMember.get().getClub() != null) {
+            throw new RuntimeException("This member already has a club");
+        }
+        if (optionalClub.get().getMembers().contains(optionalMember.get())) {
+            throw new RuntimeException("This club already has a member with the given id");
+        }
+
+        optionalMember.get().setClub(optionalClub.get());
+        optionalClub.get().getMembers().add(optionalMember.get());
+        Club updatedClub = clubRepository.save(optionalClub.get());
+        memberRepository.save(optionalMember.get());
+
+        return updatedClub.getMembers().stream().map(MemberDto::of).toList();
+    }
+
+    public List<MemberDto> removeMemberFromClub(long clubId, long memberId) {
+        var optionalClub = clubRepository.findById(clubId);
+        var optionalMember = memberRepository.findById(memberId);
+
+        if (optionalClub.isEmpty()) {
+            throw new RuntimeException("Club with the given id does not exist");
+        }
+        if (optionalMember.isEmpty()) {
+            throw new RuntimeException("Member with the given id does not exist");
+        }
+        if (!optionalClub.get().getMembers().contains(optionalMember.get())){
+            throw new RuntimeException("This club does not have a member with the given id");
+        }
+        if (optionalMember.get().getClub().getIdClub() != clubId) {
+            throw new RuntimeException("This member is not in a club with the given id");
+        }
+        if(optionalMember.get().getCoach() != null) {
+            optionalMember.get().setCoach(null);
+        }
+
+        optionalClub.get().getMembers().remove(optionalMember.get());
+        optionalMember.get().setClub(null);
+        Club updatedClub = clubRepository.save(optionalClub.get());
+        memberRepository.save(optionalMember.get());
+
+        return updatedClub.getMembers().stream().map(MemberDto::of).toList();
     }
 
 }

@@ -39,6 +39,6 @@ public enum MembershipType {
         this.duration = duration;
     }
 
-    //todo start & end data
+    //todo start & end date
 
 }

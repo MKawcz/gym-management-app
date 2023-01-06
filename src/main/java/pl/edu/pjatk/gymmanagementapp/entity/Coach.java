@@ -26,14 +26,8 @@ public class Coach {
     private Club club;
 
     public void of(CoachDto dto) {
-        if(dto.getFirstName() != null) {
-            this.setFirstName(dto.getFirstName());
-        }
-        if(dto.getLastName() != null) {
-            this.setLastName(dto.getLastName());
-        }
-        if(dto.getSalary() != null) {
-            this.setSalary(dto.getSalary());
-        }
+        this.setFirstName(dto.getFirstName());
+        this.setLastName(dto.getLastName());
+        this.setSalary(dto.getSalary());
     }
 }

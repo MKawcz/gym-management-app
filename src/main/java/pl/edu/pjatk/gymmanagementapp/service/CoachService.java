@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
+import pl.edu.pjatk.gymmanagementapp.entity.Club;
 import pl.edu.pjatk.gymmanagementapp.entity.Coach;
 import pl.edu.pjatk.gymmanagementapp.entity.Member;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
@@ -13,6 +14,7 @@ import pl.edu.pjatk.gymmanagementapp.repository.ICatalogData;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -97,6 +99,7 @@ public class CoachService {
         if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
             throw new RuntimeException("This Club does not have a coach with the given id");
         }
+
         Coach coach = optionalCoach.get();
         CoachDto dto = CoachDto.of(coach);
 
@@ -122,7 +125,7 @@ public class CoachService {
                 .toList();
     }
 
-    public MemberDto saveCoachExistingMember(long clubId, long coachId, long memberId) {
+    public MemberDto assignMemberToCoach(long clubId, long coachId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
@@ -155,7 +158,7 @@ public class CoachService {
         return MemberDto.of(memberRepository.save(optionalMember.get()));
     }
 
-    public List<MemberDto> removeCoachMember(long clubId, long coachId, long memberId) {
+    public List<MemberDto> removeMemberFromCoach(long clubId, long coachId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
@@ -189,5 +192,6 @@ public class CoachService {
 
         return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
     }
+
 }
 
