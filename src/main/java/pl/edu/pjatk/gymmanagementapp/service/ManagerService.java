@@ -17,7 +17,7 @@ public class ManagerService {
     private final ManagerRepository managerRepository;
     private final ClubRepository clubRepository;
 
-    @CacheEvict(value = {"ClubManagers", "ClubManagers"}, allEntries = true)
+    @CacheEvict(value = {"ClubManagers", "ClubManager"}, allEntries = true)
     public ManagerDto saveManager(long clubId, ManagerDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -47,7 +47,7 @@ public class ManagerService {
                 .toList();
     }
 
-    @CacheEvict(value = {"ClubManagers", "ClubManagers"}, allEntries = true)
+    @CacheEvict(value = {"ClubManagers", "ClubManager"}, allEntries = true)
     public ManagerDto updateClubManager(long clubId, long managerId, ManagerDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
@@ -69,7 +69,7 @@ public class ManagerService {
     }
     //todo wydziel te if'y do oddzielnej funkcji
 
-    @CacheEvict(value = {"ClubManagers", "ClubManagers"}, allEntries = true)
+    @CacheEvict(value = {"ClubManagers", "ClubManager"}, allEntries = true)
     public void deleteClubManager(long clubId, long managerId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
