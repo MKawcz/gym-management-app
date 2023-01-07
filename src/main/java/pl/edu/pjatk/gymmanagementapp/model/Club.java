@@ -1,4 +1,4 @@
-package pl.edu.pjatk.gymmanagementapp.entity;
+package pl.edu.pjatk.gymmanagementapp.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,7 +28,6 @@ public class Club {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "club")
     private List<Member> members;
 
-    //todo zmien of
     public void of(ClubDto dto) {
         this.setName(dto.getName());
     }

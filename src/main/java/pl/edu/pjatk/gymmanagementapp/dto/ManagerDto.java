@@ -1,7 +1,7 @@
 package pl.edu.pjatk.gymmanagementapp.dto;
 
 import lombok.Data;
-import pl.edu.pjatk.gymmanagementapp.entity.Manager;
+import pl.edu.pjatk.gymmanagementapp.model.Manager;
 
 @Data
 public class ManagerDto {

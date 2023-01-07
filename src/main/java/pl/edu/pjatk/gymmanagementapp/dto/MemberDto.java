@@ -1,15 +1,12 @@
 package pl.edu.pjatk.gymmanagementapp.dto;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import pl.edu.pjatk.gymmanagementapp.anntotation.EnumNamePattern;
-import pl.edu.pjatk.gymmanagementapp.entity.Member;
-import pl.edu.pjatk.gymmanagementapp.entity.enums.MembershipType;
+import pl.edu.pjatk.gymmanagementapp.model.Member;
+import pl.edu.pjatk.gymmanagementapp.model.enums.MembershipType;
 
 @Data
 public class MemberDto {

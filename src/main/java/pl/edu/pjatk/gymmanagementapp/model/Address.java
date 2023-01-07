@@ -1,4 +1,4 @@
-package pl.edu.pjatk.gymmanagementapp.entity;
+package pl.edu.pjatk.gymmanagementapp.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

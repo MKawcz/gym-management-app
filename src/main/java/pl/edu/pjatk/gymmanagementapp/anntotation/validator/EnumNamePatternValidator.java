@@ -1,4 +1,4 @@
-package pl.edu.pjatk.gymmanagementapp.validator;
+package pl.edu.pjatk.gymmanagementapp.anntotation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

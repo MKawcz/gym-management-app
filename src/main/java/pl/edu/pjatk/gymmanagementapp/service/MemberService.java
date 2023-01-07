@@ -1,16 +1,15 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
-import pl.edu.pjatk.gymmanagementapp.entity.Club;
-import pl.edu.pjatk.gymmanagementapp.entity.Member;
+import pl.edu.pjatk.gymmanagementapp.model.Member;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +17,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ClubRepository clubRepository;
 
+    @CacheEvict(value = {"ClubMembers", "ClubMember"}, allEntries = true)
     public MemberDto saveMember(long clubId, MemberDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -38,6 +38,7 @@ public class MemberService {
         return MemberDto.of(memberRepository.save(member));
     }
 
+    @Cacheable(value = "ClubMembers")
     public List<MemberDto> getClubMembers(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -50,6 +51,7 @@ public class MemberService {
                 .toList();
     }
 
+    @CacheEvict(value = {"ClubMembers", "ClubMember"}, allEntries = true)
     public MemberDto updateClubMember(long clubId, long memberId, MemberDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
@@ -70,6 +72,7 @@ public class MemberService {
         return MemberDto.of(memberRepository.save(memberToUpdate));
     }
 
+    @CacheEvict(value = {"ClubMembers", "ClubMember"}, allEntries = true)
     public void deleteClubMember(long clubId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
@@ -87,6 +90,7 @@ public class MemberService {
         memberRepository.delete(optionalMember.get());
     }
 
+    @Cacheable(value = "ClubMember")
     public MemberDto getClubMember(long clubId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import pl.edu.pjatk.gymmanagementapp.entity.Address;
+import pl.edu.pjatk.gymmanagementapp.model.Address;
 
 @Data
 public class AddressDto {

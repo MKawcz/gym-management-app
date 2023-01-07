@@ -1,31 +1,25 @@
-package pl.edu.pjatk.gymmanagementapp.entity;
+package pl.edu.pjatk.gymmanagementapp.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
-
-import java.util.List;
 
 @Entity
 @Data
-public class Coach {
+public class Manager{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idCoach;
-    private String firstName;
+    private Long idManager;
+    private String firstName;                               //todo wydziel wspólne pola do klasy nadrzędnej
     private String lastName;
     private Integer salary;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "coach", orphanRemoval = true)
-    private List<Member> members;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="id_club")
     private Club club;
 
-    public void of(CoachDto dto) {
+    public void of(ManagerDto dto) {
         this.setFirstName(dto.getFirstName());
         this.setLastName(dto.getLastName());
         this.setSalary(dto.getSalary());

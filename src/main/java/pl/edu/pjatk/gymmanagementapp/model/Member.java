@@ -1,9 +1,9 @@
-package pl.edu.pjatk.gymmanagementapp.entity;
+package pl.edu.pjatk.gymmanagementapp.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
-import pl.edu.pjatk.gymmanagementapp.entity.enums.MembershipType;
+import pl.edu.pjatk.gymmanagementapp.model.enums.MembershipType;
 
 @Entity
 @Data

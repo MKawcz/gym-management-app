@@ -1,7 +1,9 @@
 package pl.edu.pjatk.gymmanagementapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.edu.pjatk.gymmanagementapp.entity.Address;
+import org.springframework.stereotype.Repository;
+import pl.edu.pjatk.gymmanagementapp.model.Address;
 
+@Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
 }

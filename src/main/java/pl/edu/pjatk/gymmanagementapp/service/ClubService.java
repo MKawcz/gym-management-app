@@ -1,17 +1,15 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
-import pl.edu.pjatk.gymmanagementapp.entity.Address;
-import pl.edu.pjatk.gymmanagementapp.entity.Club;
+import pl.edu.pjatk.gymmanagementapp.model.Address;
+import pl.edu.pjatk.gymmanagementapp.model.Club;
 
-import pl.edu.pjatk.gymmanagementapp.entity.Coach;
-import pl.edu.pjatk.gymmanagementapp.entity.Member;
 import pl.edu.pjatk.gymmanagementapp.repository.AddressRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
-import pl.edu.pjatk.gymmanagementapp.repository.ICatalogData;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
@@ -23,6 +21,7 @@ public class ClubService {
     private final AddressRepository addressRepository;
     private final MemberRepository memberRepository;
 
+    @CacheEvict(value = {"AllClubs", "Club"}, allEntries = true)
     public ClubDto saveClub(ClubDto dto) {
         Club club = new Club();
         club.of(dto);
@@ -30,12 +29,14 @@ public class ClubService {
         return ClubDto.of(clubRepository.save(club));
     }
 
+    @Cacheable(value = "AllClubs")
     public List<ClubDto> getAllClubs() {
         return clubRepository.findAll().stream()
                 .map(ClubDto::of)
                 .toList();
     }
 
+    @CacheEvict(value = {"AllClubs", "Club"}, allEntries = true)
     public ClubDto updateClub(long clubId, ClubDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -49,6 +50,7 @@ public class ClubService {
         return ClubDto.of(clubRepository.save(clubToUpdate));
     }
 
+    @CacheEvict(value = {"AllClubs", "Club"}, allEntries = true)
     public void deleteClub(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -59,6 +61,7 @@ public class ClubService {
         clubRepository.delete(optionalClub.get());
     }
 
+    @Cacheable(value = "Club")
     public ClubDto getClub(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -72,6 +75,7 @@ public class ClubService {
         return dto;
     }
 
+    @Cacheable(value = "ClubAddress")
     public AddressDto getClubAddress(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -85,6 +89,7 @@ public class ClubService {
         return AddressDto.of(optionalClub.get().getAddress());
     }
 
+    @CacheEvict(value = "ClubAddress", allEntries = true)
     public AddressDto saveClubAddress(long clubId, AddressDto dto) {
         var optionalClub = clubRepository.findById(clubId);
         if (optionalClub.isEmpty()) {
@@ -111,6 +116,7 @@ public class ClubService {
         return clubWithNewAddress;
     }
 
+    @CacheEvict(value = "ClubMembers", allEntries = true)
     public List<MemberDto>  assignMemberToClub(long clubId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
@@ -136,6 +142,7 @@ public class ClubService {
         return updatedClub.getMembers().stream().map(MemberDto::of).toList();
     }
 
+    @CacheEvict(value = "ClubMembers", allEntries = true)
     public List<MemberDto> removeMemberFromClub(long clubId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);

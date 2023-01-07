@@ -1,11 +1,9 @@
 package pl.edu.pjatk.gymmanagementapp.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import pl.edu.pjatk.gymmanagementapp.entity.Club;
+import pl.edu.pjatk.gymmanagementapp.model.Club;
 
 @Data
 public class ClubDto {

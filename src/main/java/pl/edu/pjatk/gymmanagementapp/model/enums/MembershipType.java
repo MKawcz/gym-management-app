@@ -1,9 +1,8 @@
-package pl.edu.pjatk.gymmanagementapp.entity.enums;
+package pl.edu.pjatk.gymmanagementapp.model.enums;
 
 import lombok.Getter;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 //public class Membership {
 //

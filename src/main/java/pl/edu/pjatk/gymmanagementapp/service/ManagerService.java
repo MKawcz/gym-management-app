@@ -1,12 +1,12 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
-import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
-import pl.edu.pjatk.gymmanagementapp.entity.Manager;
+import pl.edu.pjatk.gymmanagementapp.model.Manager;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
-import pl.edu.pjatk.gymmanagementapp.repository.ICatalogData;
 import pl.edu.pjatk.gymmanagementapp.repository.ManagerRepository;
 
 import java.util.List;
@@ -17,6 +17,7 @@ public class ManagerService {
     private final ManagerRepository managerRepository;
     private final ClubRepository clubRepository;
 
+    @CacheEvict(value = {"ClubManagers", "ClubManagers"}, allEntries = true)
     public ManagerDto saveManager(long clubId, ManagerDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -33,6 +34,7 @@ public class ManagerService {
         return ManagerDto.of(managerRepository.save(manager));
     }
 
+    @Cacheable(value = "ClubManagers")
     public List<ManagerDto> getClubManagers(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -45,6 +47,7 @@ public class ManagerService {
                 .toList();
     }
 
+    @CacheEvict(value = {"ClubManagers", "ClubManagers"}, allEntries = true)
     public ManagerDto updateClubManager(long clubId, long managerId, ManagerDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
@@ -65,6 +68,8 @@ public class ManagerService {
         return ManagerDto.of(managerRepository.save(managerToUpdate));
     }
     //todo wydziel te if'y do oddzielnej funkcji
+
+    @CacheEvict(value = {"ClubManagers", "ClubManagers"}, allEntries = true)
     public void deleteClubManager(long clubId, long managerId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
@@ -82,6 +87,7 @@ public class ManagerService {
         managerRepository.delete(optionalManager.get());
     }
 
+    @Cacheable(value = "ClubManager")
     public ManagerDto getClubManager(long clubId, long managerId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
