@@ -9,9 +9,9 @@
         <expiry>
             <ttl unit="seconds">30</ttl>
         </expiry>
-        <resources>
-            <heap unit="entries">2</heap>
-        </resources>
+<!--        <resources>-->
+<!--            <heap unit="entries">2</heap>-->
+<!--        </resources>-->
     </cache-template>
     <cache alias="AllClubs" uses-template="default"/>
     <cache alias="Club" uses-template="default"/>

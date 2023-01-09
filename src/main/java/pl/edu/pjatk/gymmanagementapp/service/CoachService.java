@@ -2,6 +2,7 @@ package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
@@ -50,7 +51,7 @@ public class CoachService {
                 .toList();
     }
 
-    @CacheEvict(value = {"ClubCoaches", "ClubCoach"}, allEntries = true)
+    @CachePut(value = "ClubCoach", key = "#result.idCoach")
     public CoachDto updateClubCoach(long clubId, long coachId, CoachDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);

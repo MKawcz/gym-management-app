@@ -1,4 +1,4 @@
-package pl.edu.pjatk.gymmanagementapp;
+package pl.edu.pjatk.gymmanagementapp.configuration;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
