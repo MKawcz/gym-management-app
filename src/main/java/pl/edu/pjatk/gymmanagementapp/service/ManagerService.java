@@ -52,7 +52,7 @@ public class ManagerService {
     public ManagerDto updateClubManager(long clubId, long managerId, ManagerDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
-
+        // custom checked extends nosuchelement
         if (optionalClub.isEmpty()) {
             throw new RuntimeException("Club with the given id does not exist");
         }
