@@ -25,7 +25,7 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<List<MemberDto>> getClubMembers(@PathVariable long clubId){
-        return ResponseEntity.ok(memberService.getClubMembers(clubId));
+        return ResponseEntity.ok(memberService.getClubMembers(clubId).getMembers());
     }
 
     @PutMapping("/{memberId}")

@@ -26,7 +26,7 @@ public class CoachController {
 
     @GetMapping
     public ResponseEntity<List<CoachDto>> getClubCoaches(@PathVariable long clubId) {
-        return ResponseEntity.ok(coachService.getClubCoaches(clubId));
+        return ResponseEntity.ok(coachService.getClubCoaches(clubId).getCoaches());
     }
 
     @PutMapping("/{coachId}")
@@ -47,7 +47,7 @@ public class CoachController {
 
     @GetMapping("/{coachId}/coachMembers")
     public ResponseEntity<List<MemberDto>> getCoachMembers(@PathVariable long clubId, @PathVariable long coachId) {
-        return ResponseEntity.ok(coachService.getCoachMembers(clubId, coachId));
+        return ResponseEntity.ok(coachService.getCoachMembers(clubId, coachId).getMembers());
     }
 
     @PutMapping("/{coachId}/assignCoachMember/")

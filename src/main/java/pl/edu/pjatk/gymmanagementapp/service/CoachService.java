@@ -5,14 +5,23 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import pl.edu.pjatk.gymmanagementapp.anntotation.cached.CachedCoaches;
+import pl.edu.pjatk.gymmanagementapp.anntotation.cached.CachedMembers;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
+import pl.edu.pjatk.gymmanagementapp.exception.NoSuchEntityInChosenClubException;
+import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Coach;
+import pl.edu.pjatk.gymmanagementapp.model.Manager;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.CoachRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Optional;
+
+import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;
+import static pl.edu.pjatk.gymmanagementapp.service.MemberService.validateMember;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +34,7 @@ public class CoachService {
     public CoachDto saveCoach(long clubId, CoachDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
+        validateClub(optionalClub);
 
         Coach coach = new Coach();
         coach.of(dto);
@@ -39,32 +46,24 @@ public class CoachService {
     }
 
     @Cacheable(value = "ClubCoaches")
-    public List<CoachDto> getClubCoaches(long clubId) {
+    public CachedCoaches getClubCoaches(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
+        validateClub(optionalClub);
 
-        return optionalClub.get().getCoaches().stream()
+        return new CachedCoaches(optionalClub.get().getCoaches().stream()
                 .map(CoachDto::of)
-                .toList();
+                .toList());
     }
 
-    @CachePut(value = "ClubCoach", key = "#result.idCoach")
+    @CacheEvict(value = {"ClubCoaches", "ClubCoach"}, allEntries = true)
     public CoachDto updateClubCoach(long clubId, long coachId, CoachDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalCoach.isEmpty()) {
-            throw new RuntimeException("Coach with the given id does not exist");
-        }
-        if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            throw new RuntimeException("This Club does not have a coach with the given id");
-        }
+        validateClub(optionalClub);
+        validateCoach(optionalClub, optionalCoach);
+
         Coach coachToUpdate = optionalCoach.get();
         coachToUpdate.of(updatedDto);
 
@@ -76,32 +75,19 @@ public class CoachService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalCoach.isEmpty()) {
-            throw new RuntimeException("Coach with the given id does not exist");
-        }
-        if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            throw new RuntimeException("This Club does not have a coach with the given id");
-        }
+        validateClub(optionalClub);
+        validateCoach(optionalClub, optionalCoach);
+
         coachRepository.delete(optionalCoach.get());
     }
 
-    @Cacheable(value = "ClubCoach")
+    @Cacheable(value = "ClubCoach", key = "#coachId")
     public CoachDto getClubCoach(long clubId, long coachId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalCoach.isEmpty()) {
-            throw new RuntimeException("Coach with the given id does not exist");
-        }
-        if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            throw new RuntimeException("This Club does not have a coach with the given id");
-        }
+        validateClub(optionalClub);
+        validateCoach(optionalClub, optionalCoach);
 
         Coach coach = optionalCoach.get();
         CoachDto dto = CoachDto.of(coach);
@@ -109,24 +95,17 @@ public class CoachService {
         return dto;
     }
 
-    @Cacheable(value = "CoachMembers")
-    public List<MemberDto> getCoachMembers(long clubId, long coachId) {
+    @Cacheable(value = "CoachMembers", key = "#coachId")
+    public CachedMembers getCoachMembers(long clubId, long coachId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalCoach.isEmpty()) {
-            throw new RuntimeException("Coach with the given id does not exist");
-        }
-        if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            throw new RuntimeException("This Club does not have a coach with the given id");
-        }
+        validateClub(optionalClub);
+        validateCoach(optionalClub, optionalCoach);
 
-        return optionalCoach.get().getMembers().stream()
+        return new CachedMembers(optionalCoach.get().getMembers().stream()
                 .map(MemberDto::of)
-                .toList();
+                .toList());
     }
 
     @CacheEvict(value = "CoachMembers", allEntries = true)
@@ -135,27 +114,14 @@ public class CoachService {
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalCoach.isEmpty()) {
-            throw new RuntimeException("Coach with the given id does not exist");
-        }
-        if (optionalMember.isEmpty()) {
-            throw new RuntimeException("Member with the given id does not exist");
-        }
+        validateClub(optionalClub);
+        validateCoach(optionalClub, optionalCoach);
+        validateMember(optionalClub, optionalMember);
+
         if (optionalMember.get().getCoach() != null) {
-            throw new RuntimeException("This member already has a coach");
+            throw new RuntimeException("This member already has a coach");          //todo custom exc
         }
-        if (optionalCoach.get().getMembers().contains(optionalMember.get())) {
-            throw new RuntimeException("This coach already has a member with the given id");
-        }
-        if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            throw new RuntimeException("This Club does not have a coach with the given id");
-        }
-        if (!optionalClub.get().getMembers().contains(optionalMember.get())) {
-            throw new RuntimeException("This Club does not have a member with the given id");
-        }
+
         optionalMember.get().setCoach(optionalCoach.get());
         optionalCoach.get().getMembers().add(optionalMember.get());
         coachRepository.save(optionalCoach.get());
@@ -169,26 +135,12 @@ public class CoachService {
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
 
-        if (optionalClub.isEmpty()) {
-            throw new RuntimeException("Club with the given id does not exist");
-        }
-        if (optionalCoach.isEmpty()) {
-            throw new RuntimeException("Coach with the given id does not exist");
-        }
-        if (optionalMember.isEmpty()) {
-            throw new RuntimeException("Member with the given id does not exist");
-        }
+        validateClub(optionalClub);
+        validateCoach(optionalClub, optionalCoach);
+        validateMember(optionalClub, optionalMember);
+
         if (!optionalCoach.get().getMembers().contains(optionalMember.get())){
-            throw new RuntimeException("This coach does not have a member with the given id");
-        }
-        if (optionalMember.get().getCoach().getIdCoach() != coachId) {
-            throw new RuntimeException("This member does not have a coach with the given id");
-        }
-        if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            throw new RuntimeException("This Club does not have a coach with the given id");
-        }
-        if (!optionalClub.get().getMembers().contains(optionalMember.get())) {
-            throw new RuntimeException("This Club does not have a member with the given id");
+            throw new RuntimeException("This coach does not have a member with the given id");          //todo custom exc
         }
 
         optionalCoach.get().getMembers().remove(optionalMember.get());
@@ -197,6 +149,12 @@ public class CoachService {
         memberRepository.save(optionalMember.get());
 
         return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
+    }
+
+    private static void validateCoach(Optional<Club> optionalClub, Optional<Coach> optionalCoach) {
+        if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach.get())) {
+            throw new NoSuchEntityInChosenClubException("This Club does not have a coach with the given id");
+        }
     }
 
 }

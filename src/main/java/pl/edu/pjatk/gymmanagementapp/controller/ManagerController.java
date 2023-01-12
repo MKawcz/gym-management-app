@@ -23,7 +23,7 @@ public class ManagerController {
 
     @GetMapping
     public ResponseEntity<List<ManagerDto>> getAllManagers(@PathVariable long clubId){
-        return ResponseEntity.ok(managerService.getClubManagers(clubId));
+        return ResponseEntity.ok(managerService.getClubManagers(clubId).getManagers());
     }
 
     @PutMapping("/{managerId}")

@@ -24,7 +24,7 @@ public class ClubController {
 
     @GetMapping
     public ResponseEntity<List<ClubDto>> getAllClubs(){
-        return ResponseEntity.ok(clubService.getAllClubs());
+        return ResponseEntity.ok(clubService.getAllClubs().getClubs());
     }
 
     @PutMapping("/{clubId}")
