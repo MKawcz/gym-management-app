@@ -1,4 +1,4 @@
-package pl.edu.pjatk.gymmanagementapp.anntotation.cached;
+package pl.edu.pjatk.gymmanagementapp.cached;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

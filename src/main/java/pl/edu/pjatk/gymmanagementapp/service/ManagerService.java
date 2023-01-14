@@ -2,19 +2,16 @@ package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import pl.edu.pjatk.gymmanagementapp.anntotation.cached.CachedManagers;
+import pl.edu.pjatk.gymmanagementapp.cached.CachedManagers;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
 import pl.edu.pjatk.gymmanagementapp.exception.NoSuchEntityInChosenClubException;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Manager;
-import pl.edu.pjatk.gymmanagementapp.model.Member;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.ManagerRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;

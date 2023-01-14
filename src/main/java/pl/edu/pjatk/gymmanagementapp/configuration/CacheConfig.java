@@ -4,10 +4,10 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.edu.pjatk.gymmanagementapp.anntotation.cached.CachedClubs;
-import pl.edu.pjatk.gymmanagementapp.anntotation.cached.CachedCoaches;
-import pl.edu.pjatk.gymmanagementapp.anntotation.cached.CachedManagers;
-import pl.edu.pjatk.gymmanagementapp.anntotation.cached.CachedMembers;
+import pl.edu.pjatk.gymmanagementapp.cached.CachedClubs;
+import pl.edu.pjatk.gymmanagementapp.cached.CachedCoaches;
+import pl.edu.pjatk.gymmanagementapp.cached.CachedManagers;
+import pl.edu.pjatk.gymmanagementapp.cached.CachedMembers;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
 
 
@@ -27,6 +27,7 @@ public class CacheConfig {
         CachingProvider provider = Caching.getCachingProvider();
         CacheManager cacheManager = provider.getCacheManager();
 
+        //todo extract to method
         MutableConfiguration<Long, ClubDto> clubConfiguration =
                 new MutableConfiguration<Long, ClubDto>()
                         .setTypes(Long.class, ClubDto.class)
