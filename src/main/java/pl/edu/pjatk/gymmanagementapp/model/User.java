@@ -1,39 +1,47 @@
 package pl.edu.pjatk.gymmanagementapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.edu.pjatk.gymmanagementapp.model.enums.Role;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-@Data
+@EqualsAndHashCode(of = "uuid")
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
 public class User implements UserDetails {
+    //todo walidacja pol
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;
-    private String firstName;
-    private String lastName;
+
+    @Builder.Default
+    private String uuid = UUID.randomUUID().toString();
+
+    private String username;
     private String email;
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        this.roles.forEach(role -> {
+            var sga = new SimpleGrantedAuthority(role.name());
+            authorities.add(sga);
+        });
+        return authorities;
     }
 
     @Override

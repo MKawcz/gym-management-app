@@ -152,6 +152,8 @@ public class CoachService {
     private static void validateCoach(Optional<Club> optionalClub, Optional<Coach> optionalCoach) {
         if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach.get())) {
             throw new NoSuchEntityInChosenClubException("This Club does not have a coach with the given id");
+
+            //todo zamien na coach not found exception rozszrzając entity not found exception
         }
     }
 

@@ -30,7 +30,7 @@ public class MemberDto {
             "characters long, contain at least 1 number and at least 1 uppercase letter")
     private String password;
 
-    @EnumNamePattern(regexp = "DAILY|MONTHLY|SIX_MONTH|ANNUAL")                 //todo popraw walidacje
+    @EnumNamePattern(regexp = "DAILY|MONTHLY|SIX_MONTH|ANNUAL")                 //todo  popraw walidacje
     private MembershipType membershipType;
 
     public static MemberDto of(Member member) {

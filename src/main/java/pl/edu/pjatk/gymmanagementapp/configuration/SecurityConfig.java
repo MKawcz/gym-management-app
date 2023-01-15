@@ -1,41 +1,49 @@
 package pl.edu.pjatk.gymmanagementapp.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public InMemoryUserDetailsManager user() {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("miki")
-                        .password("{noop}password")
-                        .authorities("read")
-                        .build()
-        );
-    }
+    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
-                .build();
+        http
+            .csrf()
+            .disable()
+            .authorizeHttpRequests((auth) -> {
+                try {
+                    auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/clubs").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers( "/clubs/**").hasRole("ADMIN")
+                        .anyRequest()
+                        .authenticated()
+                        .and()
+                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .and()
+                        .authenticationProvider(authenticationProvider)
+                        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+        return http.build();
     }
+
 
 }

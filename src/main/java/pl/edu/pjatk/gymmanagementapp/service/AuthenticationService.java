@@ -1,6 +1,7 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +14,8 @@ import pl.edu.pjatk.gymmanagementapp.response.AuthenticationResponse;
 import pl.edu.pjatk.gymmanagementapp.response.request.AuthenticationRequest;
 import pl.edu.pjatk.gymmanagementapp.response.request.RegisterRequest;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -23,11 +26,10 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
+                .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .roles(Set.of(request.getRole()))
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -44,7 +46,7 @@ public class AuthenticationService {
                 )
         );
         var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException("User with the given email could not be found"));
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
