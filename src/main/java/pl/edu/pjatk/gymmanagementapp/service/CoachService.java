@@ -1,6 +1,7 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,9 @@ import pl.edu.pjatk.gymmanagementapp.cached.CachedCoaches;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedMembers;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
-import pl.edu.pjatk.gymmanagementapp.exception.NoSuchEntityInChosenClubException;
+import pl.edu.pjatk.gymmanagementapp.exception.CoachNotFoundException;
+import pl.edu.pjatk.gymmanagementapp.exception.CoachWithoutChosenMemberException;
+import pl.edu.pjatk.gymmanagementapp.exception.MemberAlreadyWithCoachException;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Coach;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
@@ -16,12 +19,15 @@ import pl.edu.pjatk.gymmanagementapp.repository.CoachRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;
 import static pl.edu.pjatk.gymmanagementapp.service.MemberService.validateMember;
 
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CoachService {
     private final CoachRepository coachRepository;
@@ -117,7 +123,7 @@ public class CoachService {
         validateMember(optionalClub, optionalMember);
 
         if (optionalMember.get().getCoach() != null) {
-            throw new RuntimeException("This member already has a coach");          //todo custom exc
+            throw new MemberAlreadyWithCoachException("This member already has a coach");
         }
 
         optionalMember.get().setCoach(optionalCoach.get());
@@ -138,7 +144,7 @@ public class CoachService {
         validateMember(optionalClub, optionalMember);
 
         if (!optionalCoach.get().getMembers().contains(optionalMember.get())){
-            throw new RuntimeException("This coach does not have a member with the given id");          //todo custom exc
+            throw new CoachWithoutChosenMemberException("This coach does not have a member with the given id");
         }
 
         optionalCoach.get().getMembers().remove(optionalMember.get());
@@ -149,11 +155,10 @@ public class CoachService {
         return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
     }
 
-    private static void validateCoach(Optional<Club> optionalClub, Optional<Coach> optionalCoach) {
-        if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            throw new NoSuchEntityInChosenClubException("This Club does not have a coach with the given id");
-
-            //todo zamien na coach not found exception rozszrzając entity not found exception
+    public static void validateCoach(Optional<Club> optionalClub, Optional<Coach> optionalCoach) {
+        if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach)) {
+            log.error("Attempt of getting Coach which does not belong to chosen Club");
+            throw new CoachNotFoundException("This Club does not have a coach with the given id");
         }
     }
 

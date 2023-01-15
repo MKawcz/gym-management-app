@@ -4,27 +4,6 @@ import lombok.Getter;
 
 import java.time.Duration;
 
-//public class Membership {
-//
-//    private LocalDateTime startDate;
-//    private MembershipType membershipType;
-//    private LocalDateTime endDate;
-//
-//    public Membership(LocalDateTime startDate, MembershipType membershipType) {
-//        this.startDate = startDate;
-//        this.membershipType = membershipType;
-//        this.endDate = startDate.plus(membershipType.getDuration());
-//    }
-//
-//    public LocalDateTime getStartDate() {
-//        return startDate;
-//    }
-//
-//    public LocalDateTime getEndDate() {
-//        return endDate;
-//    }
-//}
-
 @Getter
 public enum MembershipType {
     DAILY(Duration.ofDays(1)),

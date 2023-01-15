@@ -3,7 +3,6 @@ package pl.edu.pjatk.gymmanagementapp.anntotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import pl.edu.pjatk.gymmanagementapp.anntotation.validator.EnumNamePatternValidator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

@@ -18,7 +18,6 @@ import java.util.*;
 @Entity
 @Table(name = "_user")
 public class User implements UserDetails {
-    //todo walidacja pol
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;

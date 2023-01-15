@@ -1,12 +1,13 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedManagers;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
-import pl.edu.pjatk.gymmanagementapp.exception.NoSuchEntityInChosenClubException;
+import pl.edu.pjatk.gymmanagementapp.exception.ManagerNotFoundException;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Manager;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
@@ -16,7 +17,9 @@ import java.util.Optional;
 
 import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;
 
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ManagerService {
     private final ManagerRepository managerRepository;
@@ -68,7 +71,7 @@ public class ManagerService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
 
-        validateClub(optionalClub);
+       validateClub(optionalClub);
         validateManager(optionalClub, optionalManager);
 
         managerRepository.delete(optionalManager.get());
@@ -88,9 +91,10 @@ public class ManagerService {
         return dto;
     }
 
-    private static void validateManager(Optional<Club> optionalClub, Optional<Manager> optionalManager) {
+    public static void validateManager(Optional<Club> optionalClub, Optional<Manager> optionalManager) {
         if (optionalManager.isEmpty() || !optionalClub.get().getManagers().contains(optionalManager.get())) {
-            throw new NoSuchEntityInChosenClubException("This Club does not have a manager with the given id");
+            log.error("Attempt of getting Manager which does not belong to chosen Club");
+            throw new ManagerNotFoundException("This Club does not have a manager with the given id");
         }
     }
 }

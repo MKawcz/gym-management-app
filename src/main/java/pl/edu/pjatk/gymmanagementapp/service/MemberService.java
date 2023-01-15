@@ -1,12 +1,13 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedMembers;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
-import pl.edu.pjatk.gymmanagementapp.exception.NoSuchEntityInChosenClubException;
+import pl.edu.pjatk.gymmanagementapp.exception.MemberNotFoundException;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Member;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
@@ -16,7 +17,9 @@ import java.util.Optional;
 
 import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;
 
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -27,10 +30,6 @@ public class MemberService {
         var optionalClub = clubRepository.findById(clubId);
 
         validateClub(optionalClub);
-
-        if (memberRepository.getMemberByEmail(dto.getEmail()).isPresent()){
-            throw new RuntimeException("Member with the given email already exists");           //todo custom exc
-        }
 
         Member member = new Member();
         member.of(dto);
@@ -59,10 +58,6 @@ public class MemberService {
 
         validateClub(optionalClub);
         validateMember(optionalClub, optionalMember);
-
-        if (!optionalClub.get().getMembers().contains(optionalMember.get())) {
-            throw new RuntimeException("This Club does not have a member with the given id");
-        }
 
         Member memberToUpdate = optionalMember.get();
         memberToUpdate.of(updatedDto);
@@ -93,12 +88,12 @@ public class MemberService {
         MemberDto dto = MemberDto.of(member);
 
         return dto;
-
     }
 
-    protected static void validateMember(Optional<Club> optionalClub, Optional<Member> optionalMember) {
+    public static void validateMember(Optional<Club> optionalClub, Optional<Member> optionalMember) {
         if (optionalMember.isEmpty() || !optionalClub.get().getMembers().contains(optionalMember.get())) {
-            throw new NoSuchEntityInChosenClubException("This Club does not have a member with the given id");
+            log.error("Attempt of getting Member which does not belong to chosen Club");
+            throw new MemberNotFoundException("This Club does not have a member with the given id");
         }
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedClubs;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
-import pl.edu.pjatk.gymmanagementapp.exception.NoSuchClubException;
+import pl.edu.pjatk.gymmanagementapp.exception.*;
 import pl.edu.pjatk.gymmanagementapp.model.Address;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 
@@ -21,9 +21,10 @@ import java.util.Optional;
 
 import static pl.edu.pjatk.gymmanagementapp.service.MemberService.validateMember;
 
+
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class ClubService {
     private final ClubRepository clubRepository;
     private final AddressRepository addressRepository;
@@ -48,7 +49,7 @@ public class ClubService {
     public ClubDto updateClub(long clubId, ClubDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+       validateClub(optionalClub);
 
         Club clubToUpdate = optionalClub.get();
         clubToUpdate.of(updatedDto);
@@ -84,7 +85,7 @@ public class ClubService {
         validateClub(optionalClub);
 
         if (optionalClub.get().getAddress() == null) {
-            throw new RuntimeException("Club with the given id does not have an address");          //todo custom exc
+            throw new ClubWithoutAddressException("Club with the given id does not have an address");
         }
 
         return AddressDto.of(optionalClub.get().getAddress());
@@ -124,15 +125,14 @@ public class ClubService {
 
         validateClub(optionalClub);
 
-        //todo custom exc
         if (optionalMember.isEmpty()) {
-            throw new RuntimeException("Member with the given id does not exist");
+            throw new NoSuchMemberException("Member with the given id does not exist");
         }
         if (optionalMember.get().getClub() != null) {
-            throw new RuntimeException("This member already has a club");
+            throw new MemberAlreadyWithClubException("This member already has a club");
         }
         if (optionalClub.get().getMembers().contains(optionalMember.get())) {
-            throw new RuntimeException("This club already has a member with the given id");
+            throw new ClubAlreadyWithMemberException("This club already has a member with the given id");
         }
 
         optionalMember.get().setClub(optionalClub.get());
@@ -163,17 +163,13 @@ public class ClubService {
         return updatedClub.getMembers().stream().map(MemberDto::of).toList();
     }
 
-    protected static void validateClub(Optional<Club> optionalClub) {
+    public static void validateClub(Optional<Club> optionalClub) {
         try {
             optionalClub.get();
         } catch (NoSuchElementException e) {
-            //todo nie static
-            //todo wydziel te walidacje do oddzielnego obiektu jako component, dodaj logi z body prarametru w formie jsona
-            //todo zapisuj logi do bazy, albo pliku
-            // zrób test wykorzystując te logi i tworząc mocka
-            //todo logi przy logowaniu
-            log.error("Club with the given id does not exist", e);
-            throw new NoSuchClubException("Club with the given id does not exist", e);
+            log.error("Attempt of getting Club which does not exist");
+            throw new ClubNotFoundException("Club with the given id does not exist");
         }
     }
+
 }
