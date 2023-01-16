@@ -11,7 +11,7 @@ public class Manager{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idManager;
-    private String firstName;                               //todo wydziel wspólne pola do klasy nadrzędnej
+    private String firstName;
     private String lastName;
     private Integer salary;
 
@@ -25,3 +25,4 @@ public class Manager{
         this.setSalary(dto.getSalary());
     }
 }
+//todo wydziel wspólne pola do klasy nadrzędnej

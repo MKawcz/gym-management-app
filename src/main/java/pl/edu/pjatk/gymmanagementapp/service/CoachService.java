@@ -156,7 +156,7 @@ public class CoachService {
     }
 
     public static void validateCoach(Optional<Club> optionalClub, Optional<Coach> optionalCoach) {
-        if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach)) {
+        if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach.get())) {
             log.error("Attempt of getting Coach which does not belong to chosen Club");
             throw new CoachNotFoundException("This Club does not have a coach with the given id");
         }
