@@ -20,7 +20,7 @@ public class MemberDto {
     @Size(max=50, message = "Field lastName should be max 50 characters long")
     private String lastName;
 
-    @EnumNamePattern(regexp = "DAILY|MONTHLY|SIX_MONTH|ANNUAL")   //todo popraw walidacje
+//    @EnumNamePattern(regexp = "DAILY|MONTHLY|SIX_MONTH|ANNUAL")   //todo popraw walidacje
     private MembershipType membershipType;
 
     public static MemberDto of(Member member) {

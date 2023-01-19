@@ -27,7 +27,7 @@ public class RegisterRequest {
             "characters long, contain at least 1 number and at least 1 uppercase letter")
     private String password;
 
-    @EnumNamePattern(regexp = "ROLE_ADMIN|ROLE_USER")
+//    @EnumNamePattern(regexp = "ROLE_ADMIN|ROLE_USER")
     private Role role;
 
 }

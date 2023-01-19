@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedMembers;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
 import pl.edu.pjatk.gymmanagementapp.exception.MemberNotFoundException;
+import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Member;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.Optional;
-
-import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;
 
 
 @Service
@@ -24,12 +23,14 @@ import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final ClubRepository clubRepository;
+    private final OptionalValidator optionalValidator;
+
 
     @CacheEvict(value = {"ClubMembers", "ClubMember"}, allEntries = true)
     public MemberDto saveMember(long clubId, MemberDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         Member member = new Member();
         member.of(dto);
@@ -44,7 +45,7 @@ public class MemberService {
     public CachedMembers getClubMembers(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         return new CachedMembers (optionalClub.get().getMembers().stream()
                 .map(MemberDto::of)
@@ -56,8 +57,8 @@ public class MemberService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
 
-        validateClub(optionalClub);
-        validateMember(optionalClub, optionalMember);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateMember(optionalClub, optionalMember);
 
         Member memberToUpdate = optionalMember.get();
         memberToUpdate.of(updatedDto);
@@ -70,8 +71,8 @@ public class MemberService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
 
-        validateClub(optionalClub);
-        validateMember(optionalClub, optionalMember);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateMember(optionalClub, optionalMember);
 
         memberRepository.delete(optionalMember.get());
     }
@@ -81,20 +82,13 @@ public class MemberService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
 
-        validateClub(optionalClub);
-        validateMember(optionalClub, optionalMember);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateMember(optionalClub, optionalMember);
 
         Member member = optionalMember.get();
         MemberDto dto = MemberDto.of(member);
 
         return dto;
-    }
-
-    public static void validateMember(Optional<Club> optionalClub, Optional<Member> optionalMember) {
-        if (optionalMember.isEmpty() || !optionalClub.get().getMembers().contains(optionalMember.get())) {
-            log.error("Attempt of getting Member which does not belong to chosen Club");
-            throw new MemberNotFoundException("This Club does not have a member with the given id");
-        }
     }
 }
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedClubs;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
 import pl.edu.pjatk.gymmanagementapp.exception.*;
+import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
 import pl.edu.pjatk.gymmanagementapp.model.Address;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 
@@ -16,10 +17,6 @@ import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static pl.edu.pjatk.gymmanagementapp.service.MemberService.validateMember;
 
 
 @Service
@@ -29,6 +26,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final AddressRepository addressRepository;
     private final MemberRepository memberRepository;
+    private final OptionalValidator optionalValidator;
 
     @CacheEvict(value = {"AllClubs", "Club"}, allEntries = true)
     public ClubDto saveClub(ClubDto dto) {
@@ -49,7 +47,7 @@ public class ClubService {
     public ClubDto updateClub(long clubId, ClubDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
 
-       validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         Club clubToUpdate = optionalClub.get();
         clubToUpdate.of(updatedDto);
@@ -61,7 +59,7 @@ public class ClubService {
     public void deleteClub(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         clubRepository.delete(optionalClub.get());
     }
@@ -70,7 +68,7 @@ public class ClubService {
     public ClubDto getClub(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         Club club = optionalClub.get();
         ClubDto dto = ClubDto.of(club);
@@ -82,7 +80,7 @@ public class ClubService {
     public AddressDto getClubAddress(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         if (optionalClub.get().getAddress() == null) {
             throw new ClubWithoutAddressException("Club with the given id does not have an address");
@@ -95,7 +93,7 @@ public class ClubService {
     public AddressDto saveClubAddress(long clubId, AddressDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         if (optionalClub.get().getAddress() == null) {
             Address newAddress = new Address();
@@ -123,7 +121,7 @@ public class ClubService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         if (optionalMember.isEmpty()) {
             throw new NoSuchMemberException("Member with the given id does not exist");
@@ -148,8 +146,8 @@ public class ClubService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalMember = memberRepository.findById(memberId);
 
-        validateClub(optionalClub);
-        validateMember(optionalClub, optionalMember);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateMember(optionalClub, optionalMember);
 
         if(optionalMember.get().getCoach() != null) {
             optionalMember.get().setCoach(null);
@@ -161,15 +159,6 @@ public class ClubService {
         memberRepository.save(optionalMember.get());
 
         return updatedClub.getMembers().stream().map(MemberDto::of).toList();
-    }
-
-    public static void validateClub(Optional<Club> optionalClub) {
-        try {
-            optionalClub.get();
-        } catch (NoSuchElementException e) {
-            log.error("Attempt of getting Club which does not exist");
-            throw new ClubNotFoundException("Club with the given id does not exist");
-        }
     }
 
 }

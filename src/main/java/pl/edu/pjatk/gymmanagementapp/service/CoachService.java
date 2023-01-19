@@ -12,6 +12,7 @@ import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
 import pl.edu.pjatk.gymmanagementapp.exception.CoachNotFoundException;
 import pl.edu.pjatk.gymmanagementapp.exception.CoachWithoutChosenMemberException;
 import pl.edu.pjatk.gymmanagementapp.exception.MemberAlreadyWithCoachException;
+import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Coach;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
@@ -22,8 +23,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static pl.edu.pjatk.gymmanagementapp.service.ClubService.validateClub;
-import static pl.edu.pjatk.gymmanagementapp.service.MemberService.validateMember;
 
 
 @Service
@@ -33,12 +32,14 @@ public class CoachService {
     private final CoachRepository coachRepository;
     private final MemberRepository memberRepository;
     private final ClubRepository clubRepository;
+    private final OptionalValidator optionalValidator;
+
 
     @CacheEvict(value = {"ClubCoaches", "ClubCoach"}, allEntries = true)
     public CoachDto saveCoach(long clubId, CoachDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         Coach coach = new Coach();
         coach.of(dto);
@@ -53,7 +54,7 @@ public class CoachService {
     public CachedCoaches getClubCoaches(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
-        validateClub(optionalClub);
+        optionalValidator.validateClub(optionalClub);
 
         return new CachedCoaches(optionalClub.get().getCoaches().stream()
                 .map(CoachDto::of)
@@ -65,8 +66,8 @@ public class CoachService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        validateClub(optionalClub);
-        validateCoach(optionalClub, optionalCoach);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateCoach(optionalClub, optionalCoach);
 
         Coach coachToUpdate = optionalCoach.get();
         coachToUpdate.of(updatedDto);
@@ -79,8 +80,8 @@ public class CoachService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        validateClub(optionalClub);
-        validateCoach(optionalClub, optionalCoach);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateCoach(optionalClub, optionalCoach);
 
         coachRepository.delete(optionalCoach.get());
     }
@@ -90,8 +91,8 @@ public class CoachService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        validateClub(optionalClub);
-        validateCoach(optionalClub, optionalCoach);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateCoach(optionalClub, optionalCoach);
 
         Coach coach = optionalCoach.get();
         CoachDto dto = CoachDto.of(coach);
@@ -104,8 +105,8 @@ public class CoachService {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
 
-        validateClub(optionalClub);
-        validateCoach(optionalClub, optionalCoach);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateCoach(optionalClub, optionalCoach);
 
         return new CachedMembers(optionalCoach.get().getMembers().stream()
                 .map(MemberDto::of)
@@ -118,9 +119,9 @@ public class CoachService {
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
 
-        validateClub(optionalClub);
-        validateCoach(optionalClub, optionalCoach);
-        validateMember(optionalClub, optionalMember);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateCoach(optionalClub, optionalCoach);
+        optionalValidator.validateMember(optionalClub, optionalMember);
 
         if (optionalMember.get().getCoach() != null) {
             throw new MemberAlreadyWithCoachException("This member already has a coach");
@@ -139,9 +140,9 @@ public class CoachService {
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
 
-        validateClub(optionalClub);
-        validateCoach(optionalClub, optionalCoach);
-        validateMember(optionalClub, optionalMember);
+        optionalValidator.validateClub(optionalClub);
+        optionalValidator.validateCoach(optionalClub, optionalCoach);
+        optionalValidator.validateMember(optionalClub, optionalMember);
 
         if (!optionalCoach.get().getMembers().contains(optionalMember.get())){
             throw new CoachWithoutChosenMemberException("This coach does not have a member with the given id");
@@ -155,12 +156,6 @@ public class CoachService {
         return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
     }
 
-    public static void validateCoach(Optional<Club> optionalClub, Optional<Coach> optionalCoach) {
-        if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach.get())) {
-            log.error("Attempt of getting Coach which does not belong to chosen Club");
-            throw new CoachNotFoundException("This Club does not have a coach with the given id");
-        }
-    }
 
 }
 
