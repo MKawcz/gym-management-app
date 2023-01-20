@@ -114,7 +114,7 @@ public class CoachService {
     }
 
     @CacheEvict(value = "CoachMembers", allEntries = true)
-    public MemberDto assignMemberToCoach(long clubId, long coachId, long memberId) {
+    public List<MemberDto> assignMemberToCoach(long clubId, long coachId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
         var optionalMember = memberRepository.findById(memberId);
@@ -129,9 +129,10 @@ public class CoachService {
 
         optionalMember.get().setCoach(optionalCoach.get());
         optionalCoach.get().getMembers().add(optionalMember.get());
-        coachRepository.save(optionalCoach.get());
+        Coach updatedCoach = coachRepository.save(optionalCoach.get());
+        memberRepository.save(optionalMember.get());
 
-        return MemberDto.of(memberRepository.save(optionalMember.get()));
+        return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
     }
 
     @CacheEvict(value = "CoachMembers", allEntries = true)

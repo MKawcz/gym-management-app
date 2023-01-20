@@ -27,68 +27,16 @@ public class CacheConfig {
         CachingProvider provider = Caching.getCachingProvider();
         CacheManager cacheManager = provider.getCacheManager();
 
-        //todo extract to method
-        MutableConfiguration<Long, ClubDto> clubConfiguration =
-                new MutableConfiguration<Long, ClubDto>()
-                        .setTypes(Long.class, ClubDto.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<SimpleKey, CachedClubs> allClubsConfiguration =
-                new MutableConfiguration<SimpleKey, CachedClubs>()
-                        .setTypes(SimpleKey.class, CachedClubs.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, AddressDto> addressConfiguration =
-                new MutableConfiguration<Long, AddressDto>()
-                        .setTypes(Long.class, AddressDto.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, CoachDto> coachConfiguration =
-                new MutableConfiguration<Long, CoachDto>()
-                        .setTypes(Long.class, CoachDto.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, CachedCoaches> clubCoachesConfiguration =
-                new MutableConfiguration<Long, CachedCoaches>()
-                        .setTypes(Long.class, CachedCoaches.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, CachedMembers> coachMembersConfiguration =
-                new MutableConfiguration<Long, CachedMembers>()
-                        .setTypes(Long.class, CachedMembers.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, ManagerDto> managerConfiguration =
-                new MutableConfiguration<Long, ManagerDto>()
-                        .setTypes(Long.class, ManagerDto.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, CachedManagers> clubManagersConfiguration =
-                new MutableConfiguration<Long, CachedManagers>()
-                        .setTypes(Long.class, CachedManagers.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, MemberDto> memberConfiguration =
-                new MutableConfiguration<Long, MemberDto>()
-                        .setTypes(Long.class, MemberDto.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-        MutableConfiguration<Long, CachedMembers> clubMembersConfiguration =
-                new MutableConfiguration<Long, CachedMembers>()
-                        .setTypes(Long.class, CachedMembers.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
-
-
+        MutableConfiguration<Long, ClubDto> clubConfiguration = configureCache(Long.class, ClubDto.class);
+        MutableConfiguration<SimpleKey, CachedClubs> allClubsConfiguration = configureCache(SimpleKey.class, CachedClubs.class);
+        MutableConfiguration<Long, AddressDto> addressConfiguration = configureCache(Long.class, AddressDto.class);
+        MutableConfiguration<Long, CoachDto> coachConfiguration = configureCache(Long.class, CoachDto.class);
+        MutableConfiguration<Long, CachedCoaches> clubCoachesConfiguration = configureCache(Long.class, CachedCoaches.class);
+        MutableConfiguration<Long, CachedMembers> coachMembersConfiguration = configureCache(Long.class, CachedMembers.class);
+        MutableConfiguration<Long, ManagerDto> managerConfiguration = configureCache(Long.class, ManagerDto.class);
+        MutableConfiguration<Long, CachedManagers> clubManagersConfiguration = configureCache(Long.class, CachedManagers.class);
+        MutableConfiguration<Long, MemberDto> memberConfiguration = configureCache(Long.class, MemberDto.class);
+        MutableConfiguration<Long, CachedMembers> clubMembersConfiguration = configureCache(Long.class, CachedMembers.class);
 
         cacheManager.createCache("Club", clubConfiguration);
         cacheManager.createCache("AllClubs", allClubsConfiguration);
@@ -104,5 +52,11 @@ public class CacheConfig {
         return cacheManager;
     }
 
-
+    public <TKey, TVal> MutableConfiguration<TKey, TVal> configureCache(Class<TKey> key, Class<TVal> value) {
+         return new MutableConfiguration<TKey, TVal>()
+                        .setTypes(key, value)
+                        .setStoreByValue(false)
+                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
+    }
+    
 }

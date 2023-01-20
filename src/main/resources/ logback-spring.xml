@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread])
+                %highlight(%-5level) %logger{36}.%M - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="db"
+              class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource
+                class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <driverClass>org.postgresql.Driver</driverClass>
+            <url>jdbc:postgresql://localhost:5432/postgres</url>
+            <user>postgres</user>
+            <password>root</password>
+        </connectionSource>
+    </appender>
+    <root level="info">
+        <appender-ref ref="db" />
+    </root>
+</configuration>

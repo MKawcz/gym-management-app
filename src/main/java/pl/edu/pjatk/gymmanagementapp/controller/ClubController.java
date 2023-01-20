@@ -34,7 +34,7 @@ public class ClubController {
     @PutMapping("/{clubId}")
     public ResponseEntity<ClubDto> updateClub(@PathVariable long clubId, @Valid @RequestBody ClubDto dto) {
         ClubDto updatedClub = clubService.updateClub(clubId, dto);
-        log.info("Club updated: {}", updatedClub);
+        log.info("Club of id" + clubId + "updated: {}", updatedClub);
         return ResponseEntity.ok(updatedClub);
     }
 
@@ -64,16 +64,16 @@ public class ClubController {
 
     @PutMapping("/{clubId}/assignMember/")
     public ResponseEntity<List<MemberDto>> assignMemberToClub(@PathVariable long clubId, @RequestParam long memberId) {
-        List<MemberDto> refreshedMemberList = clubService.assignMemberToClub(clubId, memberId);
+        List<MemberDto> refreshedMembersList = clubService.assignMemberToClub(clubId, memberId);
         log.info("Member of id: " + memberId + " assigned to Club of id: " + clubId);
-        return ResponseEntity.ok(refreshedMemberList);
+        return ResponseEntity.ok(refreshedMembersList);
     }
 
     @PutMapping("/{clubId}/removeMember/")
     public ResponseEntity<List<MemberDto>> removeMemberFromClub(@PathVariable long clubId, @RequestParam long memberId) {
-        List<MemberDto> refreshedMemberList = clubService.removeMemberFromClub(clubId, memberId);
+        List<MemberDto> refreshedMembersList = clubService.removeMemberFromClub(clubId, memberId);
         log.info("Member of id: " + memberId + " removed from Club of id: " + clubId);
-        return ResponseEntity.ok(refreshedMemberList);
+        return ResponseEntity.ok(refreshedMembersList);
     }
 
 }

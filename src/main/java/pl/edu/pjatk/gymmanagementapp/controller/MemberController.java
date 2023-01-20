@@ -2,6 +2,7 @@ package pl.edu.pjatk.gymmanagementapp.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -14,13 +15,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/clubs/{clubId}/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
 
     @PostMapping
     public ResponseEntity<MemberDto> saveMember(@PathVariable long clubId, @Valid @RequestBody MemberDto dto) {
-        return ResponseEntity.ok(memberService.saveMember(clubId, dto));
+        MemberDto savedMember = memberService.saveMember(clubId, dto);
+        log.info("Member created: {} in the Club of id: " + clubId, savedMember);
+        return ResponseEntity.ok(savedMember);
     }
 
     @GetMapping
@@ -30,12 +34,15 @@ public class MemberController {
 
     @PutMapping("/{memberId}")
     public ResponseEntity<MemberDto> updateClubMember(@PathVariable long clubId, @PathVariable long memberId, @Valid @RequestBody MemberDto dto) {
-        return ResponseEntity.ok(memberService.updateClubMember(clubId, memberId, dto));
+        MemberDto updatedMember = memberService.updateClubMember(clubId, memberId, dto);
+        log.info("Member of id: " + memberId + " updated: {} in the Club of id: " + clubId, updatedMember);
+        return ResponseEntity.ok(updatedMember);
     }
 
     @DeleteMapping("/{memberId}")
     public ResponseEntity<String> deleteClubMember(@PathVariable long clubId, @PathVariable long memberId) {
         memberService.deleteClubMember(clubId, memberId);
+        log.info("Member of id: " + memberId + " has been deleted from Club of id: " + clubId);
         return ResponseEntity.ok("Member of id:" + memberId + " has been deleted");
     }
 
