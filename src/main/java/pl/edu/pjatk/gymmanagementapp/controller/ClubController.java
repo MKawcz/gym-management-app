@@ -2,6 +2,7 @@ package pl.edu.pjatk.gymmanagementapp.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +14,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/clubs")
 @RequiredArgsConstructor
+@Slf4j
 public class ClubController {
 
     private final ClubService clubService;
 
     @PostMapping
     public ResponseEntity<ClubDto> saveClub(@Valid @RequestBody ClubDto dto) {
-        return ResponseEntity.ok(clubService.saveClub(dto));
+        ClubDto savedClub = clubService.saveClub(dto);
+        log.info("Club created: {}", savedClub);
+        return ResponseEntity.ok(savedClub);
     }
 
     @GetMapping
@@ -29,12 +33,15 @@ public class ClubController {
 
     @PutMapping("/{clubId}")
     public ResponseEntity<ClubDto> updateClub(@PathVariable long clubId, @Valid @RequestBody ClubDto dto) {
-        return ResponseEntity.ok(clubService.updateClub(clubId, dto));
+        ClubDto updatedClub = clubService.updateClub(clubId, dto);
+        log.info("Club updated: {}", updatedClub);
+        return ResponseEntity.ok(updatedClub);
     }
 
     @DeleteMapping("/{clubId}")
     public ResponseEntity<String> deleteClub(@PathVariable long clubId) {
         clubService.deleteClub(clubId);
+        log.info("Club of id: " + clubId + " has been deleted");
         return ResponseEntity.ok("Club of id: " + clubId + " has been deleted");
     }
 
@@ -50,17 +57,23 @@ public class ClubController {
 
     @PostMapping("/{clubId}/address")
     public ResponseEntity<AddressDto> saveClubAddress(@PathVariable long clubId, @Valid @RequestBody AddressDto dto) {
-        return ResponseEntity.ok(clubService.saveClubAddress(clubId, dto));
+        AddressDto savedAddress = clubService.saveClubAddress(clubId, dto);
+        log.info("Address saved {} for club with id: " + clubId, savedAddress);
+        return ResponseEntity.ok(savedAddress);
     }
 
     @PutMapping("/{clubId}/assignMember/")
     public ResponseEntity<List<MemberDto>> assignMemberToClub(@PathVariable long clubId, @RequestParam long memberId) {
-        return ResponseEntity.ok(clubService.assignMemberToClub(clubId, memberId));
+        List<MemberDto> refreshedMemberList = clubService.assignMemberToClub(clubId, memberId);
+        log.info("Member of id: " + memberId + " assigned to Club of id: " + clubId);
+        return ResponseEntity.ok(refreshedMemberList);
     }
 
     @PutMapping("/{clubId}/removeMember/")
     public ResponseEntity<List<MemberDto>> removeMemberFromClub(@PathVariable long clubId, @RequestParam long memberId) {
-        return ResponseEntity.ok(clubService.removeMemberFromClub(clubId, memberId));
+        List<MemberDto> refreshedMemberList = clubService.removeMemberFromClub(clubId, memberId);
+        log.info("Member of id: " + memberId + " removed from Club of id: " + clubId);
+        return ResponseEntity.ok(refreshedMemberList);
     }
 
 }

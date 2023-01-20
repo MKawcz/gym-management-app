@@ -28,9 +28,15 @@ public class OptionalValidator {
     }
 
     public void validateCoach(Optional<Club> optionalClub, Optional<Coach> optionalCoach) {
-        if (optionalCoach.isEmpty() || !optionalClub.get().getCoaches().contains(optionalCoach)) {
+        try {
+            optionalCoach.get();
+        } catch (NoSuchElementException e) {
+            log.error("Attempt of getting Coach which does not exist", e);
+            throw new CoachNotFoundException("Coach with the given Id does not exists");
+        }
+        if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
             log.error("Attempt of getting Coach which does not belong to chosen Club");
-            throw new CoachNotFoundException("This Club does not have a coach with the given id");
+            throw new CoachNotFoundException("This Club does not have a Coach with the given id");
         }
     }
 
@@ -41,17 +47,22 @@ public class OptionalValidator {
             log.error("Attempt of getting Manager which does not exist", e);
             throw new ManagerNotFoundException("Manager with the given Id does not exists");            //todo zamień wyjatęk żeby rozszerzał nosuchelement
         }
-
         if (!optionalClub.get().getManagers().contains(optionalManager.get())) {
             log.warn("Attempt of getting Manager which does not belong to chosen Club");
-            throw new ManagerNotFoundException("This Club does not have a manager with the given id");
+            throw new ManagerNotFoundException("This Club does not have a Manager with the given id");
         }
     }
 
     public void validateMember(Optional<Club> optionalClub, Optional<Member> optionalMember) {
-        if (optionalMember.isEmpty() || !optionalClub.get().getMembers().contains(optionalMember.get())) {
+        try {
+            optionalMember.get();
+        } catch (NoSuchElementException e) {
+            log.error("Attempt of getting Member which does not exist", e);
+            throw new MemberNotFoundException("Member with the given Id does not exists");
+        }
+        if (!optionalClub.get().getMembers().contains(optionalMember.get())) {
             log.error("Attempt of getting Member which does not belong to chosen Club");
-            throw new MemberNotFoundException("This Club does not have a member with the given id");
+            throw new CoachNotFoundException("This Club does not have a Member with the given id");
         }
     }
 }
