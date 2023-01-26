@@ -1,7 +1,9 @@
 package pl.edu.pjatk.gymmanagementapp.handler;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import pl.edu.pjatk.gymmanagementapp.controller.AuthenticationController;
 import pl.edu.pjatk.gymmanagementapp.exception.ClubNotFoundException;
 import pl.edu.pjatk.gymmanagementapp.exception.CoachNotFoundException;
 import pl.edu.pjatk.gymmanagementapp.exception.ManagerNotFoundException;
@@ -15,8 +17,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
-@Slf4j
 public class OptionalValidator {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
     public void validateClub(Optional<Club> optionalClub) {
         try {
@@ -45,7 +48,7 @@ public class OptionalValidator {
             optionalManager.get();
         } catch (NoSuchElementException e) {
             log.error("Attempt of getting Manager which does not exist", e);
-            throw new ManagerNotFoundException("Manager with the given Id does not exists");            //todo zamień wyjatęk żeby rozszerzał nosuchelement
+            throw new ManagerNotFoundException("Manager with the given Id does not exists");
         }
         if (!optionalClub.get().getManagers().contains(optionalManager.get())) {
             log.warn("Attempt of getting Manager which does not belong to chosen Club");

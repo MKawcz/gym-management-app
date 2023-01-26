@@ -25,4 +25,3 @@ public class Manager{
         this.setSalary(dto.getSalary());
     }
 }
-//todo wydziel wspólne pola do klasy nadrzędnej

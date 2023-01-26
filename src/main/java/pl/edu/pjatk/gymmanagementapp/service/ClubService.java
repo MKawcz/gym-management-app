@@ -1,11 +1,13 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedClubs;
+import pl.edu.pjatk.gymmanagementapp.controller.AuthenticationController;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
 import pl.edu.pjatk.gymmanagementapp.exception.*;
 import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
@@ -18,9 +20,7 @@ import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
 
-
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ClubService {
     private final ClubRepository clubRepository;
@@ -28,7 +28,9 @@ public class ClubService {
     private final MemberRepository memberRepository;
     private final OptionalValidator optionalValidator;
 
-    @CacheEvict(value = {"AllClubs", "Club"}, allEntries = true)
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
+
+    @CacheEvict(value = "AllClubs", allEntries = true)
     public ClubDto saveClub(ClubDto dto) {
         Club club = new Club();
         club.of(dto);
@@ -43,7 +45,7 @@ public class ClubService {
                 .toList());
     }
 
-    @CacheEvict(value = {"AllClubs", "Club"}, allEntries = true)
+    @CacheEvict(value = "AllClubs", allEntries = true)
     public ClubDto updateClub(long clubId, ClubDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -55,7 +57,7 @@ public class ClubService {
         return ClubDto.of(clubRepository.save(clubToUpdate));
     }
 
-    @CacheEvict(value = {"AllClubs", "Club"}, allEntries = true)
+    @CacheEvict(value = "AllClubs", allEntries = true)
     public void deleteClub(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -64,7 +66,6 @@ public class ClubService {
         clubRepository.delete(optionalClub.get());
     }
 
-    @Cacheable(value = "Club")
     public ClubDto getClub(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -76,20 +77,19 @@ public class ClubService {
         return dto;
     }
 
-    @Cacheable(value = "ClubAddress")
     public AddressDto getClubAddress(long clubId) {
         var optionalClub = clubRepository.findById(clubId);
 
         optionalValidator.validateClub(optionalClub);
 
         if (optionalClub.get().getAddress() == null) {
+            log.error("Attempt of getting an Address of a Club of id:" + clubId + " which does not have one");
             throw new ClubWithoutAddressException("Club with the given id does not have an address");
         }
 
         return AddressDto.of(optionalClub.get().getAddress());
     }
 
-    @CacheEvict(value = "ClubAddress", allEntries = true)
     public AddressDto saveClubAddress(long clubId, AddressDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -124,12 +124,15 @@ public class ClubService {
         optionalValidator.validateClub(optionalClub);
 
         if (optionalMember.isEmpty()) {
+            log.error("Attempt of getting Member which does not exist");
             throw new NoSuchMemberException("Member with the given id does not exist");
         }
         if (optionalMember.get().getClub() != null) {
+            log.error("Attempt of assigning a Member of id:" + memberId + "who already has a Club, to a Club of id:" + clubId);
             throw new MemberAlreadyWithClubException("This member already has a club");
         }
         if (optionalClub.get().getMembers().contains(optionalMember.get())) {
+            log.error("Attempt of assigning a Member of id:" + memberId + " to a Club of id:" + clubId + " which already has a Member with a given id");
             throw new ClubAlreadyWithMemberException("This club already has a member with the given id");
         }
 

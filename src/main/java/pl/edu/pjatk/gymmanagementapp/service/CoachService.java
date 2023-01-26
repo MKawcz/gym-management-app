@@ -1,32 +1,28 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedCoaches;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedMembers;
+import pl.edu.pjatk.gymmanagementapp.controller.AuthenticationController;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
-import pl.edu.pjatk.gymmanagementapp.exception.CoachNotFoundException;
 import pl.edu.pjatk.gymmanagementapp.exception.CoachWithoutChosenMemberException;
 import pl.edu.pjatk.gymmanagementapp.exception.MemberAlreadyWithCoachException;
 import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
-import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Coach;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.CoachRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-
 
 @Service
-@Slf4j
+
 @RequiredArgsConstructor
 public class CoachService {
     private final CoachRepository coachRepository;
@@ -34,8 +30,9 @@ public class CoachService {
     private final ClubRepository clubRepository;
     private final OptionalValidator optionalValidator;
 
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
-    @CacheEvict(value = {"ClubCoaches", "ClubCoach"}, allEntries = true)
+    @CacheEvict(value = "ClubCoaches", allEntries = true)
     public CoachDto saveCoach(long clubId, CoachDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -61,7 +58,7 @@ public class CoachService {
                 .toList());
     }
 
-    @CacheEvict(value = {"ClubCoaches", "ClubCoach"}, allEntries = true)
+    @CacheEvict(value = "ClubCoaches", allEntries = true)
     public CoachDto updateClubCoach(long clubId, long coachId, CoachDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
@@ -75,7 +72,7 @@ public class CoachService {
         return CoachDto.of(coachRepository.save(coachToUpdate));
     }
 
-    @CacheEvict(value = {"ClubCoaches", "ClubCoach"}, allEntries = true)
+    @CacheEvict(value = "ClubCoaches", allEntries = true)
     public void deleteClubCoach(long clubId, long coachId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
@@ -86,7 +83,6 @@ public class CoachService {
         coachRepository.delete(optionalCoach.get());
     }
 
-    @Cacheable(value = "ClubCoach", key = "#coachId")
     public CoachDto getClubCoach(long clubId, long coachId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
@@ -124,6 +120,7 @@ public class CoachService {
         optionalValidator.validateMember(optionalClub, optionalMember);
 
         if (optionalMember.get().getCoach() != null) {
+            log.error("Attempt of assigning Member of id:" + memberId + " who already has a Coach, to a Coach of id:" + coachId);
             throw new MemberAlreadyWithCoachException("This member already has a coach");
         }
 
@@ -146,6 +143,7 @@ public class CoachService {
         optionalValidator.validateMember(optionalClub, optionalMember);
 
         if (!optionalCoach.get().getMembers().contains(optionalMember.get())){
+            log.error("Attempt of assigning Member of id:" + memberId + " to a Coach of id:" + coachId + " which already has a Member with a given id");
             throw new CoachWithoutChosenMemberException("This coach does not have a member with the given id");
         }
 

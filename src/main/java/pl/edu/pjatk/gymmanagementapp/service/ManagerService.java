@@ -7,19 +7,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedManagers;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
-import pl.edu.pjatk.gymmanagementapp.exception.ManagerNotFoundException;
 import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
-import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Manager;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.ManagerRepository;
 
-import java.util.Optional;
-
-
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ManagerService {
     private final ManagerRepository managerRepository;
@@ -27,7 +21,7 @@ public class ManagerService {
     private final OptionalValidator optionalValidator;
 
 
-    @CacheEvict(value = {"ClubManagers", "ClubManager"}, allEntries = true)
+    @CacheEvict(value = "ClubManagers", allEntries = true)
     public ManagerDto saveManager(long clubId, ManagerDto dto) {
         var optionalClub = clubRepository.findById(clubId);
 
@@ -53,7 +47,7 @@ public class ManagerService {
                 .toList());
     }
 
-    @CacheEvict(value = {"ClubManagers", "ClubManager"}, allEntries = true)
+    @CacheEvict(value = "ClubManagers", allEntries = true)
     public ManagerDto updateClubManager(long clubId, long managerId, ManagerDto updatedDto) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
@@ -68,7 +62,7 @@ public class ManagerService {
     }
 
 
-    @CacheEvict(value = {"ClubManagers", "ClubManager"}, allEntries = true)
+    @CacheEvict(value = "ClubManagers", allEntries = true)
     public void deleteClubManager(long clubId, long managerId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);
@@ -79,7 +73,6 @@ public class ManagerService {
         managerRepository.delete(optionalManager.get());
     }
 
-    @Cacheable(value = "ClubManager", key = "#managerId")
     public ManagerDto getClubManager(long clubId, long managerId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalManager = managerRepository.findById(managerId);

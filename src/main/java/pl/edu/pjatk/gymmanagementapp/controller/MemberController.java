@@ -2,10 +2,9 @@ package pl.edu.pjatk.gymmanagementapp.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
 import pl.edu.pjatk.gymmanagementapp.service.MemberService;
@@ -15,10 +14,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/clubs/{clubId}/members")
 @RequiredArgsConstructor
-@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
+    private static final Logger log = LoggerFactory.getLogger(MemberController.class);
 
     @PostMapping
     public ResponseEntity<MemberDto> saveMember(@PathVariable long clubId, @Valid @RequestBody MemberDto dto) {

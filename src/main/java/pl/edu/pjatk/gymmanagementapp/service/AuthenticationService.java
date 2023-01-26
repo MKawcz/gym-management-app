@@ -3,11 +3,13 @@ package pl.edu.pjatk.gymmanagementapp.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.edu.pjatk.gymmanagementapp.controller.ManagerController;
 import pl.edu.pjatk.gymmanagementapp.exception.UserAlreadyExistsException;
 import pl.edu.pjatk.gymmanagementapp.model.User;
 import pl.edu.pjatk.gymmanagementapp.repository.UserRepository;
@@ -18,13 +20,13 @@ import pl.edu.pjatk.gymmanagementapp.response.request.RegisterRequest;
 import java.util.Set;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
 
     public AuthenticationResponse register(RegisterRequest request) {
         if (!repository.existsByEmail(request.getEmail())) {
