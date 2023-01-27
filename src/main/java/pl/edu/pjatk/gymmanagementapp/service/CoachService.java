@@ -96,7 +96,6 @@ public class CoachService {
         return dto;
     }
 
-    @Cacheable(value = "CoachMembers", key = "#coachId")
     public CachedMembers getCoachMembers(long clubId, long coachId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
@@ -109,7 +108,6 @@ public class CoachService {
                 .toList());
     }
 
-    @CacheEvict(value = "CoachMembers", allEntries = true)
     public List<MemberDto> assignMemberToCoach(long clubId, long coachId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
@@ -132,7 +130,6 @@ public class CoachService {
         return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
     }
 
-    @CacheEvict(value = "CoachMembers", allEntries = true)
     public List<MemberDto> removeMemberFromCoach(long clubId, long coachId, long memberId) {
         var optionalClub = clubRepository.findById(clubId);
         var optionalCoach = coachRepository.findById(coachId);
