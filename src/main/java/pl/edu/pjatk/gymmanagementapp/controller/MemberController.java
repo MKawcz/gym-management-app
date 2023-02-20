@@ -50,4 +50,31 @@ public class MemberController {
         return ResponseEntity.ok(memberService.getClubMember(clubId, memberId));
     }
 
+    @PutMapping("/assignMember/{memberId}")
+    public ResponseEntity<List<MemberDto>> assignMemberToClub(@PathVariable long clubId, @PathVariable long memberId) {
+        List<MemberDto> refreshedMembersList = memberService.assignMemberToClub(clubId, memberId);
+        log.info("Member of id: " + memberId + " assigned to Club of id: " + clubId);
+        return ResponseEntity.ok(refreshedMembersList);
+    }
+
+    @PutMapping("/removeMember/{memberId}")
+    public ResponseEntity<List<MemberDto>> removeMemberFromClub(@PathVariable long clubId, @PathVariable long memberId) {
+        List<MemberDto> refreshedMembersList = memberService.removeMemberFromClub(clubId, memberId);
+        log.info("Member of id: " + memberId + " removed from Club of id: " + clubId);
+        return ResponseEntity.ok(refreshedMembersList);
+    }
+
+    @PutMapping("/{memberId}/assignCoachMember/{coachId}")
+    public ResponseEntity<List<MemberDto>> assignMemberToCoach(@PathVariable long clubId, @PathVariable long memberId, @PathVariable long coachId) {
+        List<MemberDto> refreshedCoachMembersList  = memberService.assignMemberToCoach(clubId, coachId, memberId);
+        log.info("Member of id: " + memberId + " assigned to Coach of id: " + coachId + " in the Club of id: " + clubId);
+        return ResponseEntity.ok(refreshedCoachMembersList);
+    }
+
+    @PutMapping("/{memberId}/removeCoachMember/{coachId}")
+    public ResponseEntity<List<MemberDto>> removeMemberFromCoach(@PathVariable long clubId, @PathVariable long memberId, @PathVariable long coachId) {
+        List<MemberDto> refreshedCoachMembersList = memberService.removeMemberFromCoach(clubId, coachId, memberId);
+        log.info("Member of id: " + memberId + " assigned to Coach of id: " + coachId + " in the Club of id: " + clubId);
+        return ResponseEntity.ok(refreshedCoachMembersList);
+    }
 }

@@ -1,13 +1,12 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedManagers;
 import pl.edu.pjatk.gymmanagementapp.dto.ManagerDto;
-import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
+import pl.edu.pjatk.gymmanagementapp.validator.OptionalValidator;
 import pl.edu.pjatk.gymmanagementapp.model.Manager;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.ManagerRepository;

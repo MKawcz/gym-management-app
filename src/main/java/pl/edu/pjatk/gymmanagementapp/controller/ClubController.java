@@ -61,18 +61,4 @@ public class ClubController {
         return ResponseEntity.ok(savedAddress);
     }
 
-    @PutMapping("/{clubId}/assignMember/")
-    public ResponseEntity<List<MemberDto>> assignMemberToClub(@PathVariable long clubId, @RequestParam long memberId) {
-        List<MemberDto> refreshedMembersList = clubService.assignMemberToClub(clubId, memberId);
-        log.info("Member of id: " + memberId + " assigned to Club of id: " + clubId);
-        return ResponseEntity.ok(refreshedMembersList);
-    }
-
-    @PutMapping("/{clubId}/removeMember/")
-    public ResponseEntity<List<MemberDto>> removeMemberFromClub(@PathVariable long clubId, @RequestParam long memberId) {
-        List<MemberDto> refreshedMembersList = clubService.removeMemberFromClub(clubId, memberId);
-        log.info("Member of id: " + memberId + " removed from Club of id: " + clubId);
-        return ResponseEntity.ok(refreshedMembersList);
-    }
-
 }

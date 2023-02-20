@@ -1,13 +1,10 @@
-package pl.edu.pjatk.gymmanagementapp.handler;
+package pl.edu.pjatk.gymmanagementapp.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pl.edu.pjatk.gymmanagementapp.controller.AuthenticationController;
-import pl.edu.pjatk.gymmanagementapp.exception.ClubNotFoundException;
-import pl.edu.pjatk.gymmanagementapp.exception.CoachNotFoundException;
-import pl.edu.pjatk.gymmanagementapp.exception.ManagerNotFoundException;
-import pl.edu.pjatk.gymmanagementapp.exception.MemberNotFoundException;
+import pl.edu.pjatk.gymmanagementapp.exception.*;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 import pl.edu.pjatk.gymmanagementapp.model.Coach;
 import pl.edu.pjatk.gymmanagementapp.model.Manager;
@@ -19,7 +16,7 @@ import java.util.Optional;
 @Component
 public class OptionalValidator {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final Logger log = LoggerFactory.getLogger(OptionalValidator.class);
 
     public void validateClub(Optional<Club> optionalClub) {
         try {
@@ -39,7 +36,7 @@ public class OptionalValidator {
         }
         if (!optionalClub.get().getCoaches().contains(optionalCoach.get())) {
             log.error("Attempt of getting Coach which does not belong to chosen Club");
-            throw new CoachNotFoundException("This Club does not have a Coach with the given id");
+            throw new NoSuchCoachInClubException("This Club does not have a Coach with the given id");
         }
     }
 
@@ -52,7 +49,7 @@ public class OptionalValidator {
         }
         if (!optionalClub.get().getManagers().contains(optionalManager.get())) {
             log.warn("Attempt of getting Manager which does not belong to chosen Club");
-            throw new ManagerNotFoundException("This Club does not have a Manager with the given id");
+            throw new NoSuchManagerInClubException("This Club does not have a Manager with the given id");
         }
     }
 
@@ -65,7 +62,7 @@ public class OptionalValidator {
         }
         if (!optionalClub.get().getMembers().contains(optionalMember.get())) {
             log.error("Attempt of getting Member which does not belong to chosen Club");
-            throw new CoachNotFoundException("This Club does not have a Member with the given id");
+            throw new NoSuchMemberInClubException("This Club does not have a Member with the given id");
         }
     }
 }

@@ -56,19 +56,4 @@ public class CoachController {
     public ResponseEntity<List<MemberDto>> getCoachMembers(@PathVariable long clubId, @PathVariable long coachId) {
         return ResponseEntity.ok(coachService.getCoachMembers(clubId, coachId).getMembers());
     }
-
-    @PutMapping("/{coachId}/assignCoachMember/")
-    public ResponseEntity<List<MemberDto>> assignMemberToCoach(@PathVariable long clubId, @PathVariable long coachId, @RequestParam long memberId) {
-        List<MemberDto> refreshedCoachMembersList  = coachService.assignMemberToCoach(clubId, coachId, memberId);
-        log.info("Member of id: " + memberId + " assigned to Coach of id: " + coachId + " in the Club of id: " + clubId);
-        return ResponseEntity.ok(refreshedCoachMembersList);
-    }
-
-    @PutMapping("/{coachId}/removeCoachMember/")
-    public ResponseEntity<List<MemberDto>> removeMemberFromCoach(@PathVariable long clubId, @PathVariable long coachId, @RequestParam long memberId) {
-        List<MemberDto> refreshedCoachMembersList = coachService.removeMemberFromCoach(clubId, coachId, memberId);
-        log.info("Member of id: " + memberId + " assigned to Coach of id: " + coachId + " in the Club of id: " + clubId);
-        return ResponseEntity.ok(refreshedCoachMembersList);
-    }
-
 }

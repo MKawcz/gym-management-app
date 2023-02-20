@@ -7,28 +7,23 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedClubs;
-import pl.edu.pjatk.gymmanagementapp.controller.AuthenticationController;
 import pl.edu.pjatk.gymmanagementapp.dto.*;
 import pl.edu.pjatk.gymmanagementapp.exception.*;
-import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
+import pl.edu.pjatk.gymmanagementapp.validator.OptionalValidator;
 import pl.edu.pjatk.gymmanagementapp.model.Address;
 import pl.edu.pjatk.gymmanagementapp.model.Club;
 
 import pl.edu.pjatk.gymmanagementapp.repository.AddressRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
-import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ClubService {
     private final ClubRepository clubRepository;
     private final AddressRepository addressRepository;
-    private final MemberRepository memberRepository;
     private final OptionalValidator optionalValidator;
 
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final Logger log = LoggerFactory.getLogger(ClubService.class);
 
     @CacheEvict(value = "AllClubs", allEntries = true)
     public ClubDto saveClub(ClubDto dto) {
@@ -72,9 +67,8 @@ public class ClubService {
         optionalValidator.validateClub(optionalClub);
 
         Club club = optionalClub.get();
-        ClubDto dto = ClubDto.of(club);
 
-        return dto;
+        return ClubDto.of(club);
     }
 
     public AddressDto getClubAddress(long clubId) {
@@ -84,7 +78,7 @@ public class ClubService {
 
         if (optionalClub.get().getAddress() == null) {
             log.error("Attempt of getting an Address of a Club of id:" + clubId + " which does not have one");
-            throw new ClubWithoutAddressException("Club with the given id does not have an address");
+            throw new AddressNotFoundException("Club with the given id does not have an address");
         }
 
         return AddressDto.of(optionalClub.get().getAddress());
@@ -112,56 +106,7 @@ public class ClubService {
         address.setClub(club);
         addressRepository.save(address);
         club.setAddress(address);
-        Club clubWithNewAddress = clubRepository.save(club);
-        return clubWithNewAddress;
+
+        return clubRepository.save(club);
     }
-
-    @CacheEvict(value = "ClubMembers", allEntries = true)
-    public List<MemberDto> assignMemberToClub(long clubId, long memberId) {
-        var optionalClub = clubRepository.findById(clubId);
-        var optionalMember = memberRepository.findById(memberId);
-
-        optionalValidator.validateClub(optionalClub);
-
-        if (optionalMember.isEmpty()) {
-            log.error("Attempt of getting Member which does not exist");
-            throw new NoSuchMemberException("Member with the given id does not exist");
-        }
-        if (optionalMember.get().getClub() != null) {
-            log.error("Attempt of assigning a Member of id:" + memberId + "who already has a Club, to a Club of id:" + clubId);
-            throw new MemberAlreadyWithClubException("This member already has a club");
-        }
-        if (optionalClub.get().getMembers().contains(optionalMember.get())) {
-            log.error("Attempt of assigning a Member of id:" + memberId + " to a Club of id:" + clubId + " which already has a Member with a given id");
-            throw new ClubAlreadyWithMemberException("This club already has a member with the given id");
-        }
-
-        optionalMember.get().setClub(optionalClub.get());
-        optionalClub.get().getMembers().add(optionalMember.get());
-        Club updatedClub = clubRepository.save(optionalClub.get());
-        memberRepository.save(optionalMember.get());
-
-        return updatedClub.getMembers().stream().map(MemberDto::of).toList();
-    }
-
-    @CacheEvict(value = "ClubMembers", allEntries = true)
-    public List<MemberDto> removeMemberFromClub(long clubId, long memberId) {
-        var optionalClub = clubRepository.findById(clubId);
-        var optionalMember = memberRepository.findById(memberId);
-
-        optionalValidator.validateClub(optionalClub);
-        optionalValidator.validateMember(optionalClub, optionalMember);
-
-        if(optionalMember.get().getCoach() != null) {
-            optionalMember.get().setCoach(null);
-        }
-
-        optionalClub.get().getMembers().remove(optionalMember.get());
-        optionalMember.get().setClub(null);
-        Club updatedClub = clubRepository.save(optionalClub.get());
-        memberRepository.save(optionalMember.get());
-
-        return updatedClub.getMembers().stream().map(MemberDto::of).toList();
-    }
-
 }

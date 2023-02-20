@@ -1,36 +1,25 @@
 package pl.edu.pjatk.gymmanagementapp.service;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedCoaches;
 import pl.edu.pjatk.gymmanagementapp.cached.CachedMembers;
-import pl.edu.pjatk.gymmanagementapp.controller.AuthenticationController;
 import pl.edu.pjatk.gymmanagementapp.dto.CoachDto;
 import pl.edu.pjatk.gymmanagementapp.dto.MemberDto;
-import pl.edu.pjatk.gymmanagementapp.exception.CoachWithoutChosenMemberException;
-import pl.edu.pjatk.gymmanagementapp.exception.MemberAlreadyWithCoachException;
-import pl.edu.pjatk.gymmanagementapp.handler.OptionalValidator;
+import pl.edu.pjatk.gymmanagementapp.validator.OptionalValidator;
 import pl.edu.pjatk.gymmanagementapp.model.Coach;
 import pl.edu.pjatk.gymmanagementapp.repository.ClubRepository;
 import pl.edu.pjatk.gymmanagementapp.repository.CoachRepository;
-import pl.edu.pjatk.gymmanagementapp.repository.MemberRepository;
-
-import java.util.List;
 
 @Service
 
 @RequiredArgsConstructor
 public class CoachService {
     private final CoachRepository coachRepository;
-    private final MemberRepository memberRepository;
     private final ClubRepository clubRepository;
     private final OptionalValidator optionalValidator;
-
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
     @CacheEvict(value = "ClubCoaches", allEntries = true)
     public CoachDto saveCoach(long clubId, CoachDto dto) {
@@ -108,53 +97,6 @@ public class CoachService {
                 .map(MemberDto::of)
                 .toList());
     }
-
-    @CacheEvict(value = "CoachMembers", allEntries = true)
-    public List<MemberDto> assignMemberToCoach(long clubId, long coachId, long memberId) {
-        var optionalClub = clubRepository.findById(clubId);
-        var optionalCoach = coachRepository.findById(coachId);
-        var optionalMember = memberRepository.findById(memberId);
-
-        optionalValidator.validateClub(optionalClub);
-        optionalValidator.validateCoach(optionalClub, optionalCoach);
-        optionalValidator.validateMember(optionalClub, optionalMember);
-
-        if (optionalMember.get().getCoach() != null) {
-            log.error("Attempt of assigning Member of id:" + memberId + " who already has a Coach, to a Coach of id:" + coachId);
-            throw new MemberAlreadyWithCoachException("This member already has a coach");
-        }
-
-        optionalMember.get().setCoach(optionalCoach.get());
-        optionalCoach.get().getMembers().add(optionalMember.get());
-        Coach updatedCoach = coachRepository.save(optionalCoach.get());
-        memberRepository.save(optionalMember.get());
-
-        return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
-    }
-
-    @CacheEvict(value = "CoachMembers", allEntries = true)
-    public List<MemberDto> removeMemberFromCoach(long clubId, long coachId, long memberId) {
-        var optionalClub = clubRepository.findById(clubId);
-        var optionalCoach = coachRepository.findById(coachId);
-        var optionalMember = memberRepository.findById(memberId);
-
-        optionalValidator.validateClub(optionalClub);
-        optionalValidator.validateCoach(optionalClub, optionalCoach);
-        optionalValidator.validateMember(optionalClub, optionalMember);
-
-        if (!optionalCoach.get().getMembers().contains(optionalMember.get())){
-            log.error("Attempt of assigning Member of id:" + memberId + " to a Coach of id:" + coachId + " which already has a Member with a given id");
-            throw new CoachWithoutChosenMemberException("This coach does not have a member with the given id");
-        }
-
-        optionalCoach.get().getMembers().remove(optionalMember.get());
-        optionalMember.get().setCoach(null);
-        Coach updatedCoach = coachRepository.save(optionalCoach.get());
-        memberRepository.save(optionalMember.get());
-
-        return updatedCoach.getMembers().stream().map(MemberDto::of).toList();
-    }
-
 
 }
 
