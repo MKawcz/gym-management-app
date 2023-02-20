@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.edu.pjatk.gymmanagementapp.controller.ManagerController;
 import pl.edu.pjatk.gymmanagementapp.exception.UserAlreadyExistsException;
 import pl.edu.pjatk.gymmanagementapp.model.User;
 import pl.edu.pjatk.gymmanagementapp.repository.UserRepository;
@@ -42,7 +41,7 @@ public class AuthenticationService {
                     .token(jwtToken)
                     .build();
         }
-        log.error("Attempt to register with already taken email");
+        log.error("Attempt to register with already taken email: " +  request.getEmail());
         throw new UserAlreadyExistsException("User with a given email already exists");
     }
 
